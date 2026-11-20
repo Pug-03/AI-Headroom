@@ -1,0 +1,15 @@
+{
+  "model": { "display_name": "Sonnet 5.5" },
+  "context_window": {
+    "context_window_size": 1000000,
+    "current_usage": {
+      "input_tokens": 1200,
+      "cache_creation_input_tokens": 300000,
+      "cache_read_input_tokens": 400000
+    }
+  },
+  "rate_limits": {
+    "five_hour": { "used_percentage": 40, "resets_at": 1795064962 },
+    "seven_day": { "used_percentage": 92, "resets_at": 1795248000 }
+  }
+}

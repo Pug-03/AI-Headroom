@@ -1,0 +1,22 @@
+{
+  "account": {
+    "rate_limits": [
+      {
+        "limit_id": "codex",
+        "limit_name": null,
+        "primary_limit": { "used_percent": 40, "window_minutes": 300, "resets_at": 1795064962 },
+        "secondary_limit": { "used_percent": 12, "window_minutes": 10080, "resets_at": 1795151362 }
+      }
+    ]
+  },
+  "app": { "cli_version": "0.171.0", "display_mode": "standard" },
+  "config": { "statusline_items": ["model"] },
+  "thread": {
+    "id": "t1",
+    "name": null,
+    "agent": { "state": "ready" },
+    "model": { "display_name": "gpt-6-sol", "provider": "openai", "reasoning_level": "medium" },
+    "workspace": { "cwd": "/tmp/x" },
+    "usage": { "context": { "context_window_size": 400000, "used_tokens": 100000, "used_percentage": 25 } }
+  }
+}

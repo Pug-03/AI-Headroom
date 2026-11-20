@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>termbar: status line for Claude Code and Codex CLI</title>
+  <meta name="description" content="See your model, context window and rate limits at the bottom of Claude Code and OpenAI Codex CLI. Colored bars, your own layout, no telemetry.">
+  <meta property="og:title" content="termbar">
+  <meta property="og:description" content="Model, context and rate limits as colored bars in Claude Code and Codex CLI.">
+  <meta property="og:image" content="assets/claude.svg">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%231d2130'/><rect x='2' y='9' width='8' height='3' fill='%23dd8161'/><rect x='10' y='9' width='4' height='3' fill='%23503c32'/></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#">term<span>bar</span></a>
+    <div class="links">
+      <a href="#features"><span lang="th">ฟีเจอร์</span><span lang="en">Features</span></a>
+      <a href="#gallery"><span lang="th">หน้าตา</span><span lang="en">Gallery</span></a>
+      <a href="#install"><span lang="th">ติดตั้ง</span><span lang="en">Install</span></a>
+      <a href="#customize"><span lang="th">ปรับแต่ง</span><span lang="en">Customize</span></a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/YOUR_USER/termbar">GitHub</a>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>
+      <span lang="th">รู้ทันทีว่า<em>โควตา</em>เหลือเท่าไหร่<br>ตรงบรรทัดล่างสุดของ AI CLI</span>
+      <span lang="en">Your <em>limits</em> and context,<br>right at the bottom of your AI CLI</span>
+    </h1>
+    <p class="lead">
+      <span lang="th">termbar แสดงชื่อโมเดล, context window และโควตา 5 ชั่วโมง/รายสัปดาห์ เป็นแถบสีใน Claude Code และ OpenAI Codex CLI จัดวางได้ตามใจ ไม่ส่งข้อมูลออกไปไหน</span>
+      <span lang="en">termbar shows the model, context window and 5-hour / weekly limits as colored bars in Claude Code and OpenAI Codex CLI. Arrange it your way. No telemetry.</span>
+    </p>
+
+    <div class="install">
+      <span class="prompt">$</span>
+      <code id="cmd-hero">npm install -g github:YOUR_USER/termbar &amp;&amp; termbar install --wrap</code>
+      <button class="copy" type="button" data-copy="cmd-hero"><span lang="th">คัดลอก</span><span lang="en">Copy</span></button>
+    </div>
+    <div class="badges">
+      <span class="badge">Claude Code</span>
+      <span class="badge">OpenAI Codex CLI</span>
+      <span class="badge">Node ≥ 22.18</span>
+      <span class="badge">MIT</span>
+    </div>
+
+    <img class="shot" src="assets/claude.svg"
+         alt="Claude Code with termbar: model, context bar and token count on top; 5-hour and weekly limit bars below">
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <h2><span lang="th">ทำอะไรได้บ้าง</span><span lang="en">What it does</span></h2>
+    <p class="sub">
+      <span lang="th">ทุกอย่างที่อยากรู้ระหว่างทำงานกับ AI อยู่ในบรรทัดเดียวหรือสองบรรทัด ไม่ต้องพิมพ์ <code>/status</code> หรือเปิดเว็บเช็กโควตา</span>
+      <span lang="en">Everything you check while working with an AI agent, in one or two lines. No more typing <code>/status</code> or opening a usage page.</span>
+    </p>
+    <div class="grid">
+      <div class="card">
+        <span class="icon">🧠</span>
+        <h3><span lang="th">โมเดลและ context</span><span lang="en">Model and context</span></h3>
+        <p><span lang="th">ชื่อโมเดลที่ใช้อยู่ แถบ context window และจำนวน token เช่น 182k/1.0m อัปเดตทุกครั้งที่ CLI รีเฟรช</span><span lang="en">The current model, a context-window bar and token counts like 182k/1.0m, updated every time the CLI refreshes.</span></p>
+      </div>
+      <div class="card">
+        <span class="icon">⏱️</span>
+        <h3><span lang="th">โควตาพร้อมเวลารีเซ็ต</span><span lang="en">Limits with reset times</span></h3>
+        <p><span lang="th">โควตา 5 ชั่วโมงและรายสัปดาห์ บอกว่าจะรีเซ็ตกี่โมง ถ้า CLI ไม่ได้ส่งค่ามา termbar จะไม่แต่งตัวเลขขึ้นเอง</span><span lang="en">5-hour and weekly limits with the time they reset. If the CLI doesn't report a limit, termbar won't make one up.</span></p>
+      </div>
+      <div class="card">
+        <span class="icon">🎨</span>
+        <h3><span lang="th">สีบอกระดับ</span><span lang="en">Color by level</span></h3>
+        <p><span lang="th">เขียวเมื่อต่ำกว่า 70% ส้มตั้งแต่ 70% แดงตั้งแต่ 90% มองแวบเดียวก็รู้ว่าใกล้เต็มหรือยัง</span><span lang="en">Green below 70%, orange from 70%, red from 90%. One glance tells you how close you are.</span></p>
+      </div>
+      <div class="card">
+        <span class="icon">🧩</span>
+        <h3><span lang="th">จัดวางเองได้</span><span lang="en">Your layout</span></h3>
+        <p><span lang="th">เลือกเองว่าแต่ละบรรทัดมีอะไร เรียงยังไง ใช้ตัวคั่นแบบไหน และแยก layout ของ Claude กับ Codex ได้</span><span lang="en">Pick what goes on each line, in what order, with which separator. Separate layouts for Claude and Codex.</span></p>
+      </div>
+      <div class="card">
+        <span class="icon">📐</span>
+        <h3><span lang="th">ไม่พังเวลาย่อจอ</span><span lang="en">Fits any width</span></h3>
+        <p><span lang="th">จอแคบลงเมื่อไหร่ แถบจะหดก่อน แล้วค่อยตัดรายการท้ายๆ ออก จึงไม่ขึ้นบรรทัดใหม่จนเละ</span><span lang="en">When the terminal gets narrow the bar shrinks first, then trailing items drop, so the line never wraps into a mess.</span></p>
+      </div>
+      <div class="card">
+        <span class="icon">🔒</span>
+        <h3><span lang="th">เป็นส่วนตัว</span><span lang="en">Private by default</span></h3>
+        <p><span lang="th">ไม่มี telemetry ไม่ต่อเน็ตถ้าไม่เปิดเอง และไม่เปิดไฟล์รหัสผ่านของ Codex (มีเทสต์คอยตรวจ)</span><span lang="en">No telemetry, no network unless you opt in, and it never opens Codex's credentials file (a test enforces this).</span></p>
+      </div>
+      <div class="card">
+        <span class="icon">🤝</span>
+        <h3><span lang="th">อยู่ร่วมกับเครื่องมืออื่น</span><span lang="en">Plays nice with others</span></h3>
+        <p><span lang="th"><code>--wrap</code> เก็บ status line เดิมของคุณไว้ข้างหน้า เครื่องมืออย่าง AFK Pug ยังทำงานได้ และถอดออกได้สะอาด</span><span lang="en"><code>--wrap</code> keeps your existing status line command in front, so tools like AFK Pug keep working. Uninstall restores it exactly.</span></p>
+      </div>
+      <div class="card">
+        <span class="icon">🔌</span>
+        <h3><span lang="th">เพิ่ม CLI ใหม่ได้</span><span lang="en">Add more CLIs</span></h3>
+        <p><span lang="th">แยก adapter ออกจากตัววาด การรองรับ AI CLI ตัวใหม่คือการเพิ่มไฟล์เดียว</span><span lang="en">Adapters are separate from rendering. Supporting a new AI CLI means adding one file.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="wrap">
+    <h2><span lang="th">หน้าตาแต่ละแบบ</span><span lang="en">What it looks like</span></h2>
+    <p class="sub">
+      <span lang="th">ทุกภาพสร้างจากโค้ด layout ตัวเดียวกับที่โปรแกรมใช้จริง (<code>npm run images</code>) ใช้ข้อมูลตัวอย่าง</span>
+      <span lang="en">Every image is generated by the same layout code the CLI uses (<code>npm run images</code>), with sample data.</span>
+    </p>
+
+    <div class="gallery">
+      <figure>
+        <img class="shot" src="assets/claude.svg" loading="lazy" alt="termbar in Claude Code, two lines">
+        <figcaption>
+          <strong>Claude Code</strong>
+          <span lang="th">ค่าเริ่มต้นมีสองบรรทัด บนเป็นโมเดล, context และ token ล่างเป็นโควตา 5h และ Weekly พร้อมเวลารีเซ็ต</span>
+          <span lang="en">Default: two lines. Model, context and tokens on top; 5h and Weekly limits with reset times below.</span>
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img class="shot" src="assets/codex.svg" loading="lazy" alt="termbar in the Codex CLI footer, one row">
+        <figcaption>
+          <strong>OpenAI Codex CLI</strong>
+          <span lang="th">ใช้ระบบ status line provider ของ Codex เอง ฟุตเตอร์ของ Codex มีได้แถวเดียว termbar จึงต่อบรรทัดด้วย <code>·</code></span>
+          <span lang="en">Uses Codex's own status line provider. The Codex footer is a single row, so termbar joins your lines with <code>·</code>.</span>
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img class="shot" src="assets/levels.svg" loading="lazy" alt="Three bars: green at 35%, orange at 78%, red at 94%">
+        <figcaption>
+          <strong><span lang="th">สีตามระดับ</span><span lang="en">Color levels</span></strong>
+          <span lang="th">เขียว &lt; 70% · ส้ม ≥ 70% · แดง ≥ 90% ใช้กับทั้ง context และโควตา</span>
+          <span lang="en">Green &lt; 70% · orange ≥ 70% · red ≥ 90%, for context and limits alike.</span>
+        </figcaption>
+      </figure>
+
+      <div>
+        <h3 style="margin:0 0 18px"><span lang="th">จัด layout เอง</span><span lang="en">Custom layouts</span></h3>
+        <div class="pair">
+          <figure>
+            <img class="shot" src="assets/layout-minimal.svg" loading="lazy" alt="Minimal layout: model and context only">
+            <figcaption>
+              <strong><span lang="th">แบบเรียบ</span><span lang="en">Minimal</span></strong>
+              <span lang="th">แค่โมเดลกับ context บรรทัดเดียว</span>
+              <span lang="en">Just the model and context, one line.</span>
+            </figcaption>
+          </figure>
+          <figure>
+            <img class="shot" src="assets/layout-dots.svg" loading="lazy" alt="Compact layout with dot separators and short bars">
+            <figcaption>
+              <strong><span lang="th">แบบกะทัดรัด</span><span lang="en">Compact</span></strong>
+              <span lang="th">ตัวคั่น <code>·</code> แถบสั้น 6 ช่อง ไม่แสดงเวลารีเซ็ต และใส่ข้อความเองด้วย <code>text:◆</code></span>
+              <span lang="en"><code>·</code> separator, 6-cell bars, no reset times, and literal text with <code>text:◆</code>.</span>
+            </figcaption>
+          </figure>
+        </div>
+        <figure style="margin-top:28px">
+          <img class="shot" src="assets/layout-detailed.svg" loading="lazy" alt="Detailed four-line layout">
+          <figcaption>
+            <strong><span lang="th">แบบละเอียด</span><span lang="en">Detailed</span></strong>
+            <span lang="th">สี่บรรทัด: โมเดลกับโฟลเดอร์, context กับ token ที่เหลือ, แล้วโควตาแยกบรรทัดละอัน</span>
+            <span lang="en">Four lines: model and folder, context with tokens left, then one limit per line.</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <figure>
+        <img class="shot" src="assets/resize.svg" loading="lazy" alt="Same status line at 72, 46, 30 and 20 columns">
+        <figcaption>
+          <strong><span lang="th">ย่อจอได้</span><span lang="en">Narrow terminals</span></strong>
+          <span lang="th">ข้อมูลชุดเดียวกันที่ 72, 46, 30 และ 20 คอลัมน์ แถบหดก่อน แล้วรายการท้ายบรรทัดค่อยหายไป</span>
+          <span lang="en">The same data at 72, 46, 30 and 20 columns. Bars shrink first, then items drop from the end.</span>
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img class="shot" src="assets/nocolor.svg" loading="lazy" alt="Monochrome output with NO_COLOR">
+        <figcaption>
+          <strong>NO_COLOR</strong>
+          <span lang="th">ปิดสีด้วย <code>NO_COLOR=1</code> ส่วนที่ว่างของแถบจะเป็น ░ ให้ยังอ่านออก</span>
+          <span lang="en">Set <code>NO_COLOR=1</code> for plain text; the empty part of a bar becomes ░ so it stays readable.</span>
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img class="shot" src="assets/estimate.svg" loading="lazy" alt="Limits read from local logs marked with a tilde">
+        <figcaption>
+          <strong><span lang="th">ค่าจาก log มี ~</span><span lang="en">~ means from logs</span></strong>
+          <span lang="th">ตัวเลขที่อ่านจาก session log ในเครื่อง (เช่นโหมด <code>watch</code>) จะมี ~ นำหน้า ให้รู้ว่าไม่ใช่ค่าสดจาก CLI</span>
+          <span lang="en">Numbers read from local session logs (e.g. <code>watch</code> mode) get a ~ so you know they aren't live values.</span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2><span lang="th">ติดตั้ง</span><span lang="en">Install</span></h2>
+    <p class="sub">
+      <span lang="th">ต้องมี Node.js 22.18 ขึ้นไป termbar จะไม่ทับ status line เดิมของคุณถ้าไม่สั่ง</span>
+      <span lang="en">Requires Node.js 22.18 or newer. termbar never overwrites your existing status line unless you ask.</span>
+    </p>
+
+    <pre><span class="c"># 1. install</span>
+npm install -g github:YOUR_USER/termbar
+<span class="c"># 2. check</span>
+termbar doctor</pre>
+
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" aria-selected="true" aria-controls="tab-claude" id="t-claude">Claude Code</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="tab-codex" id="t-codex">Codex CLI</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="tab-other" id="t-other"><span lang="th">CLI อื่น / tmux</span><span lang="en">Other / tmux</span></button>
+    </div>
+
+    <div class="panel" id="tab-claude" role="tabpanel" aria-labelledby="t-claude">
+      <ol class="steps">
+        <li>
+          <span lang="th">ดูก่อนว่าจะเปลี่ยนอะไร</span><span lang="en">Preview the change</span>
+          <pre>termbar install --claude --wrap --dry-run</pre>
+        </li>
+        <li>
+          <span lang="th">ติดตั้งจริง</span><span lang="en">Install</span>
+          <pre>termbar install --claude --wrap</pre>
+          <p><span lang="th"><code>--wrap</code> เก็บคำสั่งเดิมไว้ข้างหน้า ถ้าอยากแทนที่เลยใช้ <code>--force</code> ทั้งสองแบบสำรอง <code>settings.json</code> ก่อนแก้</span><span lang="en"><code>--wrap</code> keeps your current command in front; <code>--force</code> replaces it. Both back up <code>settings.json</code> first.</span></p>
+        </li>
+        <li><span lang="th">รีสตาร์ท Claude Code</span><span lang="en">Restart Claude Code.</span></li>
+      </ol>
+    </div>
+
+    <div class="panel" id="tab-codex" role="tabpanel" aria-labelledby="t-codex" hidden>
+      <ol class="steps">
+        <li>
+          <span lang="th">ลงทะเบียน termbar กับ Codex</span><span lang="en">Register termbar with Codex</span>
+          <pre>termbar install --codex</pre>
+          <p><span lang="th">คำสั่งนี้รัน <code>codex mcp add termbar …</code> ให้</span><span lang="en">This runs <code>codex mcp add termbar …</code> for you.</span></p>
+        </li>
+        <li><span lang="th">ใน Codex พิมพ์ <code>/experimental</code> ติ๊ก <b>Custom status line</b> แล้วรีสตาร์ท Codex</span><span lang="en">In Codex, open <code>/experimental</code>, check <b>Custom status line</b>, and restart Codex.</span></li>
+        <li><span lang="th">ส่งข้อความหนึ่งครั้ง แล้วพิมพ์ <code>/statusline</code> → <b>Choose a status line provider</b> → <b>termbar</b></span><span lang="en">Send one message, then <code>/statusline</code> → <b>Choose a status line provider</b> → <b>termbar</b>.</span></li>
+      </ol>
+      <p class="note">
+        <span lang="th">ทำครั้งเดียว Codex จะจำไว้ ถ้าวันหนึ่งฟุตเตอร์กลับเป็นแบบเดิม แปลว่า provider อ่านพลาด กด F2 เพื่อดูสาเหตุ แล้วเลือก termbar ใน <code>/statusline</code> ใหม่ ระบบ provider ของ Codex ยังเป็น experimental</span>
+        <span lang="en">You only do this once. If the footer ever falls back to the default, a read failed: press F2 to see why, then reselect termbar in <code>/statusline</code>. Codex's provider API is still experimental.</span>
+      </p>
+    </div>
+
+    <div class="panel" id="tab-other" role="tabpanel" aria-labelledby="t-other" hidden>
+      <p><span lang="th">ถ้า CLI ไม่มีที่ให้ใส่ status line ให้เปิด termbar ในแผง tmux หรือแท็บข้างๆ มันจะวาดใหม่ทุก 2 วินาที</span><span lang="en">If a CLI has no status line hook, run termbar in a tmux pane or a spare tab. It redraws every 2 seconds.</span></p>
+      <pre>termbar watch --provider codex --interval 2</pre>
+    </div>
+
+    <h3 style="margin-top:40px"><span lang="th">ถอดออก</span><span lang="en">Uninstall</span></h3>
+    <pre>termbar uninstall          <span class="c"># Claude + Codex; restores your previous status line</span>
+npm uninstall -g termbar</pre>
+  </div>
+</section>
+
+<section id="customize">
+  <div class="wrap">
+    <h2><span lang="th">ปรับแต่ง</span><span lang="en">Customize</span></h2>
+    <p class="sub">
+      <span lang="th">หนึ่ง array คือหนึ่งบรรทัด เรียงจากบนลงล่าง ของในวงเล็บเรียงจากซ้ายไปขวา แก้แล้ว Codex เห็นผลในราว 1 วินาที</span>
+      <span lang="en">One array per line, top to bottom; items go left to right. Codex picks up edits within about a second.</span>
+    </p>
+
+    <div class="two">
+      <div>
+        <pre>termbar config init   <span class="c"># create the file</span>
+termbar items         <span class="c"># list widgets</span>
+termbar preview       <span class="c"># try it with sample data</span></pre>
+        <pre><span class="c">// ~/.config/termbar/config.json</span>
+{
+  <span class="k">"lines"</span>: [
+    [<span class="s">"model"</span>, <span class="s">"context"</span>, <span class="s">"tokens"</span>],
+    [<span class="s">"limit-5h"</span>, <span class="s">"limit-weekly"</span>]
+  ],
+  <span class="k">"providers"</span>: {
+    <span class="k">"codex"</span>: { <span class="k">"lines"</span>: [[<span class="s">"model"</span>, <span class="s">"context"</span>, <span class="s">"limits"</span>]] }
+  },
+  <span class="k">"separator"</span>: <span class="s">"|"</span>,
+  <span class="k">"barWidth"</span>: 10,
+  <span class="k">"showResets"</span>: true
+}</pre>
+      </div>
+      <div>
+        <table>
+          <thead><tr><th>Widget</th><th><span lang="th">แสดง</span><span lang="en">Shows</span></th></tr></thead>
+          <tbody>
+            <tr><td><code>model</code></td><td><span lang="th">ชื่อโมเดล</span><span lang="en">Model name</span></td></tr>
+            <tr><td><code>context</code></td><td><span lang="th">แถบ context + %</span><span lang="en">Context bar and percent</span></td></tr>
+            <tr><td><code>tokens</code></td><td><span lang="th">token ที่ใช้ / ทั้งหมด</span><span lang="en">Tokens used / window</span></td></tr>
+            <tr><td><code>remaining</code></td><td><span lang="th">token ที่เหลือ</span><span lang="en">Tokens left</span></td></tr>
+            <tr><td><code>limit-5h</code></td><td><span lang="th">โควตา 5 ชั่วโมง</span><span lang="en">5-hour limit</span></td></tr>
+            <tr><td><code>limit-weekly</code></td><td><span lang="th">โควตารายสัปดาห์</span><span lang="en">Weekly limit</span></td></tr>
+            <tr><td><code>limits</code></td><td><span lang="th">โควตาทุกตัวที่ CLI ส่งมา</span><span lang="en">Every limit the CLI reports</span></td></tr>
+            <tr><td><code>cwd</code></td><td><span lang="th">ชื่อโฟลเดอร์</span><span lang="en">Folder name</span></td></tr>
+            <tr><td><code>provider</code></td><td>claude / codex</td></tr>
+            <tr><td><code>text:…</code></td><td><span lang="th">ข้อความที่พิมพ์เอง</span><span lang="en">Your own text</span></td></tr>
+          </tbody>
+        </table>
+        <p class="note">
+          <span lang="th">ใส่ค่าผิดไม่พัง termbar จะใช้ค่าเริ่มต้นแทน และ <code>termbar doctor</code> จะบอกว่าผิดตรงไหน</span>
+          <span lang="en">Bad values don't break anything: termbar falls back to defaults and <code>termbar doctor</code> tells you what's wrong.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>FAQ</h2>
+    <details>
+      <summary><span lang="th">ข้อมูลมาจากไหน</span><span lang="en">Where does the data come from?</span></summary>
+      <p><span lang="th">Claude Code ส่ง JSON มาให้ทาง stdin ทุกครั้งที่รีเฟรช ส่วน Codex ส่งสถานะของ thread มาให้ provider ประมาณทุก 1 วินาที termbar แค่อ่านแล้ววาด</span><span lang="en">Claude Code pipes JSON on stdin on every refresh. Codex passes thread state to the provider about once a second. termbar just reads it and draws.</span></p>
+    </details>
+    <details>
+      <summary><span lang="th">ทำไม Codex มีแถวเดียว</span><span lang="en">Why is Codex a single row?</span></summary>
+      <p><span lang="th">ฟุตเตอร์ของ Codex ไม่มีคำสั่งขึ้นบรรทัดใหม่ และไม่รับตัวอักษรควบคุมอย่าง <code>\n</code> termbar จึงต่อบรรทัดด้วย <code>·</code> ถ้ายาวเกินจอ Codex จะตัดขึ้นบรรทัดให้เอง</span><span lang="en">The Codex footer has no line-break element and rejects control characters like <code>\n</code>, so termbar joins lines with <code>·</code>. Codex wraps it if it's wider than the terminal.</span></p>
+    </details>
+    <details>
+      <summary><span lang="th">ทำไมบางทีไม่เห็นโควตา</span><span lang="en">Why don't I see my limits?</span></summary>
+      <p><span lang="th">termbar แสดงเฉพาะค่าที่ CLI ส่งมาจริง ถ้ายังไม่ได้ล็อกอิน หรือแพ็กเกจไม่มีโควตา บรรทัดนั้นจะหายไป สำหรับ Claude เปิดการดึงผ่าน usage API ได้ (ต้องเปิดเอง): <code>{"claude": {"oauthUsage": true}}</code></span><span lang="en">termbar only shows what the CLI reports. If you're logged out or your plan has no limits, that line disappears. For Claude you can opt in to the usage API: <code>{"claude": {"oauthUsage": true}}</code>.</span></p>
+    </details>
+    <details>
+      <summary><span lang="th">ใช้กับ AFK Pug หรือ status line อื่นได้ไหม</span><span lang="en">Does it work with AFK Pug or my own status line?</span></summary>
+      <p><span lang="th">ได้ ใช้ <code>--wrap</code> คำสั่งเดิมยังได้รับ stdin ตามปกติ termbar แค่เป็นตัววาด และ <code>termbar uninstall</code> คืนคำสั่งเดิมให้ครบทุกตัวอักษร</span><span lang="en">Yes. With <code>--wrap</code> your command still receives stdin; termbar only does the drawing. <code>termbar uninstall</code> restores the exact original command.</span></p>
+    </details>
+    <details>
+      <summary><span lang="th">ปลอดภัยไหม</span><span lang="en">Is it safe?</span></summary>
+      <p><span lang="th">termbar อ่านแค่ session log และบรรทัด <code>model</code> ใน config ของ Codex ไม่เปิดไฟล์รหัสผ่าน ไม่มี telemetry และไม่ต่อเน็ตถ้าคุณไม่เปิด usage API เอง โค้ดเป็น MIT อ่านได้ทุกบรรทัด</span><span lang="en">termbar reads only Codex session logs and the <code>model</code> line of its config, never the credentials file. No telemetry, no network unless you enable the usage API. MIT-licensed, every line readable.</span></p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>termbar · MIT License</span>
+    <span><a href="https://github.com/YOUR_USER/termbar">GitHub</a> · <a href="https://github.com/YOUR_USER/termbar/blob/main/docs/ADDING_AN_ADAPTER.md"><span lang="th">เพิ่ม adapter</span><span lang="en">Add an adapter</span></a></span>
+  </div>
+</footer>
+
+<script>
+  // Language toggle (remembered per browser).
+  const setLang = (l) => {
+    document.documentElement.lang = l;
+    document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === l)));
+    try { localStorage.setItem("termbar-lang", l); } catch {}
+  };
+  document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.lang)));
+  let saved = new URLSearchParams(location.search).get("lang");
+  if (saved !== "th" && saved !== "en") {
+    saved = null;
+    try { saved = localStorage.getItem("termbar-lang"); } catch {}
+  }
+  setLang(saved || ((navigator.language || "").startsWith("th") ? "th" : "en"));
+
+  // Tabs.
+  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  tabs.forEach((t) => t.addEventListener("click", () => {
+    tabs.forEach((x) => {
+      const on = x === t;
+      x.setAttribute("aria-selected", String(on));
+      document.getElementById(x.getAttribute("aria-controls")).hidden = !on;
+    });
+  }));
+
+  // Copy buttons.
+  document.querySelectorAll(".copy").forEach((b) => b.addEventListener("click", async () => {
+    const text = document.getElementById(b.dataset.copy).textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+      const old = b.innerHTML;
+      b.textContent = "✓";
+      setTimeout(() => (b.innerHTML = old), 1200);
+    } catch {}
+  }));
+</script>
+</body>
+</html>

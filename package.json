@@ -1,0 +1,38 @@
+{
+  "name": "termbar",
+  "version": "0.1.0",
+  "description": "A status line / usage monitor for AI coding CLIs (Claude Code, OpenAI Codex CLI). Adapter-based and extensible.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "termbar": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "install.sh",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "prepare": "npm run build",
+    "images": "node scripts/gen-images.ts"
+  },
+  "keywords": [
+    "statusline",
+    "claude-code",
+    "codex",
+    "cli",
+    "usage"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0"
+  }
+}

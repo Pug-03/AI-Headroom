@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="584" height="97" viewBox="0 0 584 97" role="img" aria-label="separator &quot;·&quot;, barWidth 6, no reset times">
+<rect width="584" height="97" rx="10" fill="#1d2130"/>
+<rect width="584" height="30" rx="10" fill="#272c3c"/><rect y="20" width="584" height="10" fill="#272c3c"/>
+<circle cx="18" cy="15" r="5.5" fill="#ff5f57"/><circle cx="36" cy="15" r="5.5" fill="#febc2e"/><circle cx="54" cy="15" r="5.5" fill="#28c840"/>
+<text x="292" y="19.5" text-anchor="middle" fill="#6c7489" font-family="-apple-system, Segoe UI, sans-serif" font-size="12">separator &quot;·&quot;, barWidth 6, no reset times</text>
+<g font-family="SF Mono, Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14">
+<text x="22" y="75" xml:space="preserve"><tspan fill="#6c7489">◆</tspan><tspan fill="#6c7489"> · </tspan><tspan fill="#dcdcdc">Sonnet 5.5</tspan><tspan fill="#6c7489"> · </tspan><tspan fill="#dcdcdc">5h</tspan><tspan fill="#c9cfdb"> </tspan><tspan fill="#7fb38a">██</tspan><tspan fill="#503c32">████</tspan><tspan fill="#c9cfdb"> </tspan><tspan fill="#7fb38a">41%</tspan><tspan fill="#6c7489"> · </tspan><tspan fill="#dcdcdc">Weekly</tspan><tspan fill="#c9cfdb"> </tspan><tspan fill="#dd8161">████</tspan><tspan fill="#503c32">██</tspan><tspan fill="#c9cfdb"> </tspan><tspan fill="#dd8161">74%</tspan></text>
+</g>
+</svg>
