@@ -83,7 +83,7 @@ node --version
 ### A. ติดตั้งคำสั่ง
 
 ```sh
-npm install -g github:Pug-03/AI-Headroom
+npm install -g https://github.com/Pug-03/AI-Headroom/archive/refs/heads/main.tar.gz
 aiheadroom doctor
 ```
 
@@ -167,7 +167,7 @@ aiheadroom watch --provider codex
 
 | ต้องการ | พิมพ์ |
 |---|---|
-| **อัปเดต** | `npm install -g github:Pug-03/AI-Headroom` อีกครั้ง แล้วรีสตาร์ท CLI |
+| **อัปเดต** | `npm install -g https://github.com/Pug-03/AI-Headroom/archive/refs/heads/main.tar.gz` อีกครั้ง แล้วรีสตาร์ท CLI |
 | **ถอดออกจาก Claude Code และ Codex** | `aiheadroom uninstall` (คืน status line เดิมของ Claude ให้) |
 | **ลบคำสั่งออก** | `npm uninstall -g aiheadroom` |
 

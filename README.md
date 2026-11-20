@@ -84,7 +84,7 @@ If it's older or missing, install it from [nodejs.org](https://nodejs.org) or wi
 ### A. Install the command
 
 ```sh
-npm install -g github:Pug-03/AI-Headroom
+npm install -g https://github.com/Pug-03/AI-Headroom/archive/refs/heads/main.tar.gz
 aiheadroom doctor
 ```
 
@@ -168,7 +168,7 @@ Numbers that come from logs rather than the CLI itself are marked with `~`.
 
 | To | Run |
 |---|---|
-| **Update** | `npm install -g github:Pug-03/AI-Headroom` again, then restart your CLI |
+| **Update** | `npm install -g https://github.com/Pug-03/AI-Headroom/archive/refs/heads/main.tar.gz` again, then restart your CLI |
 | **Remove from Claude Code and Codex** | `aiheadroom uninstall` (restores your previous Claude status line) |
 | **Remove the command** | `npm uninstall -g aiheadroom` |
 
