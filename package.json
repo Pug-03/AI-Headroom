@@ -22,7 +22,6 @@
     "build": "node --no-warnings=ExperimentalWarning scripts/build.mjs",
     "typecheck": "tsc -p tsconfig.json",
     "test": "node --test \"test/**/*.test.ts\"",
-    "prepare": "npm run build",
     "images": "node scripts/gen-images.ts"
   },
   "keywords": [

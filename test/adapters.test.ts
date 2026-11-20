@@ -86,3 +86,12 @@ test("security: source never references Codex auth.json", () => {
     assert.doesNotMatch(readFileSync(f, "utf8"), /auth\.json/, `${f} mentions auth.json`);
   }
 });
+
+test("dist/ is up to date with src/ (run `npm run build` before committing)", async () => {
+  // @ts-ignore: plain .mjs build script
+  const { compile } = await import("../scripts/build.mjs");
+  const dist = new URL("../dist/", import.meta.url).pathname;
+  for (const [rel, js] of compile() as Map<string, string>) {
+    assert.equal(readFileSync(join(dist, rel), "utf8"), js, `dist/${rel} is stale`);
+  }
+});

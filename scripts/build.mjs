@@ -22,12 +22,25 @@ const walk = (dir) =>
 // Relative "./x.ts" specifiers become "./x.js" in the output.
 const rewrite = (code) => code.replace(/((?:from\s+|import\()\s*)(["'])(\.{1,2}\/[^"']+)\.ts\2/g, "$1$2$3.js$2");
 
-rmSync(out, { recursive: true, force: true });
-for (const file of walk(src)) {
-  const js = rewrite(stripTypeScriptTypes(readFileSync(file, "utf8"), { mode: "strip" }));
-  const dest = join(out, relative(src, file)).replace(/\.ts$/, ".js");
-  mkdirSync(dirname(dest), { recursive: true });
-  writeFileSync(dest, js);
+/** Map of dist-relative path -> JavaScript, for every file in src/. */
+export function compile() {
+  const files = new Map();
+  for (const file of walk(src)) {
+    const js = rewrite(stripTypeScriptTypes(readFileSync(file, "utf8"), { mode: "strip" }));
+    files.set(relative(src, file).replace(/\.ts$/, ".js"), js);
+  }
+  return files;
 }
-chmodSync(join(out, "cli.js"), 0o755);
-console.log(`built ${relative(root, out)}/`);
+
+// dist/ is committed so `npm install -g github:…` works without running scripts
+// (npm 11 blocks install scripts for global installs). A test checks it is current.
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  rmSync(out, { recursive: true, force: true });
+  for (const [rel, js] of compile()) {
+    const dest = join(out, rel);
+    mkdirSync(dirname(dest), { recursive: true });
+    writeFileSync(dest, js);
+  }
+  chmodSync(join(out, "cli.js"), 0o755);
+  console.log(`built ${relative(root, out)}/`);
+}
