@@ -133,6 +133,8 @@ export function uninstallCodex(): string {
   const removed: string[] = [];
   for (const name of [APP, LEGACY_APP]) {
     try {
+      // `codex mcp remove` exits 0 even for unknown names, so check first.
+      execFileSync("codex", ["mcp", "get", name], { stdio: "pipe" });
       execFileSync("codex", ["mcp", "remove", name], { stdio: "pipe" });
       removed.push(name);
     } catch {
