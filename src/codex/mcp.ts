@@ -10,12 +10,12 @@ import { renderCodexTree } from "../render/codexTree.ts";
  * one tool advertising a `statusline` entrypoint, and a resource that Codex
  * re-reads about once a second, passing thread state in `_meta`.
  */
-export const URI = "ui://termbar/footer";
+export const URI = "ui://aiheadroom/footer";
 const STATE_KEY = "com.openai/codex-statusline-state";
 
 const TOOL = {
   name: "statusline",
-  title: "termbar",
+  title: "AI Headroom",
   description: "Model, context usage and rate limits as a colored footer.",
   inputSchema: { type: "object", properties: {} },
   _meta: { "openai/ui": { entrypoints: [{ type: "statusline", resourceUri: URI }] } },
@@ -37,7 +37,7 @@ export function handleRequest(method: string, params: Params = {}): unknown {
       return {
         protocolVersion: "2025-06-18",
         capabilities: { tools: {}, resources: {} },
-        serverInfo: { name: "termbar", version: "0.1.0" },
+        serverInfo: { name: "aiheadroom", version: "0.1.0" },
       };
     case "ping":
       return {};

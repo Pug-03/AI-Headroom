@@ -1,99 +1,231 @@
-# termbar
+<p align="center">
+  <img src="docs/logo.svg" width="120" alt="AI Headroom logo: three bars filling green, orange and red">
+</p>
 
-A status line for AI coding CLIs. Shows the model, context-window usage and
-rate limits as colored progress bars. Works with **Claude Code** and **OpenAI
-Codex CLI**, and new CLIs plug in as small adapters.
+<h1 align="center">AI Headroom</h1>
 
-![termbar in Claude Code](site/assets/claude.svg)
+<p align="center">
+  <b>Know how much room your AI has left, right at the bottom of the terminal.</b>
+</p>
 
-![termbar in the Codex CLI footer](site/assets/codex.svg)
+<p align="center">
+  <img alt="Claude Code" src="https://img.shields.io/badge/Claude%20Code-supported-FFFFFF?labelColor=000000">
+  <img alt="Codex CLI" src="https://img.shields.io/badge/Codex%20CLI-supported-FFFFFF?labelColor=000000">
+  <img alt="Node 22.18+" src="https://img.shields.io/badge/node-22.18%2B-FFFFFF?logo=nodedotjs&logoColor=white&labelColor=000000">
+  <img alt="No telemetry" src="https://img.shields.io/badge/telemetry-none-FFFFFF?labelColor=000000">
+  <img alt="MIT" src="https://img.shields.io/badge/license-MIT-FFFFFF?labelColor=000000">
+  <img alt="Thai and English" src="https://img.shields.io/badge/lang-ไทย%20%C2%B7%20English-FFFFFF?labelColor=000000">
+</p>
 
-The lines and their order are configurable (see [Configuration](#configuration)).
+<p align="center">
+  <a href="#what-it-does">What it does</a> ·
+  <a href="#installation-guide">Installation guide</a> ·
+  <a href="#what-youll-see">What you'll see</a> ·
+  <a href="#make-it-yours">Make it yours</a> ·
+  <a href="#privacy">Privacy</a> ·
+  <a href="#troubleshooting">Troubleshooting</a> ·
+  <a href="README.th.md">ภาษาไทย</a>
+</p>
 
-Bars are green below 70%, orange from 70%, red from 90%. A `~` before a percentage
-means the number is an estimate from local logs, not a value the CLI reported.
+<p align="center">
+  <img src="site/assets/claude.svg" width="760" alt="Claude Code with AI Headroom: model, context bar and tokens on top; 5-hour and weekly limit bars below">
+  <br>
+  <sub>Made from the tool's real layout code · sample data</sub>
+</p>
 
-> Status: early (v0.1). Not published to npm yet.
+---
 
-## Install
+## What it does
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/<you>/termbar/main/install.sh | sh
-```
+You're deep in a refactor with Claude Code or Codex. The answers get vaguer, then the agent stops: the context window is full, or you hit your 5-hour limit. You had no idea it was close.
 
-or manually (Node >= 22.18):
+**AI Headroom puts the numbers you keep checking into the status line of your AI CLI**, updated as you work, so you see the wall before you hit it.
 
-```sh
-npm install -g termbar        # or: npm install -g github:<you>/termbar
-termbar install --dry-run     # preview
-termbar install               # Claude Code + Codex
-termbar doctor
-```
+- **Model and context:** the model you're on, a bar for the context window and token counts like `182k/1.0m`
+- **Usage limits:** your 5-hour and weekly quota with the time each one resets
+- **Color by level:** green below 70%, orange from 70%, red from 90%
+- **Your layout:** choose what goes on each line and in what order, separately for Claude and Codex
+- **Fits any width:** bars shrink first, then items drop, so the line never wraps into a mess
+- **Plays nice with others:** `--wrap` keeps your existing status line (for example [AFK Pug](https://github.com/Pug-03/AFK_Pug)) working, and uninstall puts it back exactly
+- **No made-up numbers:** if a CLI doesn't report a limit, AI Headroom shows nothing rather than guessing
+- **Stays on your machine:** no account, no telemetry, no network unless you opt in
 
-`termbar install` never overwrites an existing Claude `statusLine` on its own. Choose how to proceed:
-
-| Flag | Effect |
-|---|---|
-| `--wrap` | Keep your current command in front and let termbar draw the line. Tools that read Claude's stdin (such as AFK Pug) keep working. |
-| `--force` | Replace the current command with termbar. |
-| `--dry-run` | Show the change without writing anything. |
-
-How `--wrap` works: for the AFK Pug form (`if [ -x '…/afkpug-statusline' ]; then '…/afkpug-statusline' '<cmd>'; …`), only `<cmd>` is swapped for `termbar render`, so AFK Pug stays in front. For any other command, termbar runs it with a copy of stdin, discards its output, then runs `termbar render` with the same stdin.
-
-`termbar uninstall --claude` restores the exact previous command (or deletes the `statusLine` if there was none). Both install and uninstall first save `settings.json.termbar-backup-<timestamp>` next to `settings.json`.
-
-```sh
-termbar install --claude --wrap --dry-run   # preview
-termbar install --claude --wrap
-termbar uninstall --claude
-```
-
-## How it hooks in
-
-| CLI | Mechanism | Data source |
+| Works with | How it connects | Lines |
 |---|---|---|
-| Claude Code | `statusLine.command` in `~/.claude/settings.json` runs `termbar render --provider claude` | JSON on stdin (`model`, `context_window`, `rate_limits`) |
-| Codex CLI | Native **custom status line provider**: termbar runs as an MCP stdio server (`termbar mcp`) registered with `codex mcp add` | State Codex passes to the provider (model, context, rate limits) |
-| Anything else | `termbar watch --provider <id>` in a tmux pane or second terminal | The adapter's own source |
+| **Claude Code** | `statusLine` command in `~/.claude/settings.json` | as many as you like |
+| **OpenAI Codex CLI** | Codex's own status line provider (MCP) | one row ([why](#why-is-codex-only-one-row)) |
+| **Anything else** | `aiheadroom watch` in a tmux pane or spare tab | as many as you like |
 
-### Codex setup
+---
 
-```sh
-codex mcp add termbar -- node "$(npm root -g)/termbar/dist/cli.js" mcp   # `termbar install --codex` does this
-```
+## Installation guide
 
-Then in Codex: enable **Custom status line** in `/experimental`, restart, open
-`/statusline`, choose **Choose a status line provider**, and pick termbar. The
-provider API is experimental and may change between Codex versions. Codex
-polls the provider about once per second and stops if a read errors or times out.
+It takes about two minutes. Most people need **Before you start**, **A**, and **B** or **C**.
 
-Without the native provider, `termbar watch --provider codex` reads the newest
-session log under `~/.codex/sessions`. Limits only appear there when the log
-contains them; termbar does not invent numbers.
+| Part | What it covers | Who needs it |
+|---|---|---|
+| [Before you start](#before-you-start) | Node.js | everyone |
+| [A. Install the command](#a-install-the-command) | one line in Terminal | everyone |
+| [B. Claude Code](#b-claude-code) | turn on the status line | Claude Code users |
+| [C. Codex CLI](#c-codex-cli) | register and pick the provider | Codex users |
+| [D. Other CLIs and tmux](#d-other-clis-and-tmux) | a live panel next to your agent | optional |
+| [Update or uninstall](#update-or-uninstall) | newer versions, removing it | later |
 
-### Claude usage API (opt-in)
+### Before you start
 
-By default termbar uses only the `rate_limits` Claude Code sends on stdin. If you want
-usage from Anthropic's OAuth usage endpoint when stdin has none, enable it
-explicitly, via `~/.config/termbar/config.json`:
-
-```json
-{ "claude": { "oauthUsage": true } }
-```
-
-or `TERMBAR_CLAUDE_OAUTH=1`, or `--oauth-usage`. This reads your Claude Code token
-(env var or macOS Keychain) and calls `api.anthropic.com` with a 60 s cache. The
-endpoint is undocumented and may change.
-
-## Configuration
-
-Create a starter file and preview it:
+You need **Node.js 22.18 or newer**. Check in Terminal:
 
 ```sh
-termbar config init     # writes ~/.config/termbar/config.json
-termbar items           # list the widgets you can use
-termbar preview         # show your layout with sample data
+node --version
 ```
+
+If it's older or missing, install it from [nodejs.org](https://nodejs.org) or with `brew install node`.
+
+### A. Install the command
+
+```sh
+npm install -g github:Pug-03/AI-Headroom
+aiheadroom doctor
+```
+
+`doctor` checks Node, finds Claude Code and Codex, and points out problems in your settings.
+
+<details>
+<summary><b>Prefer the one-line installer, or building from source?</b></summary>
+<br>
+
+The installer does A and B for you:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Pug-03/AI-Headroom/main/install.sh | sh
+```
+
+From source:
+
+```sh
+git clone https://github.com/Pug-03/AI-Headroom.git
+cd AI-Headroom
+npm install        # also builds
+npm link           # makes `aiheadroom` available everywhere
+```
+
+</details>
+
+### B. Claude Code
+
+**B1. Preview the change.** Nothing is written yet:
+
+```sh
+aiheadroom install --claude --wrap --dry-run
+```
+
+**B2. Install.**
+
+```sh
+aiheadroom install --claude --wrap
+```
+
+| Flag | What happens to your current status line |
+|---|---|
+| `--wrap` | **kept in front.** It still gets Claude's data (AFK Pug keeps tracking your limits), and AI Headroom draws the line |
+| `--force` | replaced by AI Headroom |
+| neither | nothing changes if you already have one; you're asked to choose |
+
+Both back up `settings.json` first, as `settings.json.aiheadroom-backup-<time>`.
+
+**B3. Restart Claude Code.** The new line appears under the prompt.
+
+### C. Codex CLI
+
+**C1. Register AI Headroom with Codex.**
+
+```sh
+aiheadroom install --codex
+```
+
+This runs `codex mcp add aiheadroom …` for you.
+
+**C2. Turn on custom status lines.** Open `codex`, type `/experimental`, check **Custom status line** with <kbd>space</kbd>, press <kbd>enter</kbd>, then quit and open Codex again.
+
+**C3. Pick the provider.** Send any message, then type `/statusline` → **Choose a status line provider** → **AI Headroom**.
+
+You only do this once: Codex remembers your choice.
+
+> [!NOTE]
+> Codex's status line provider is still an experimental Codex feature. If the footer ever falls back to the default, see [The Codex footer went back to normal](#the-codex-footer-went-back-to-normal).
+
+### D. Other CLIs and tmux
+
+If a CLI has nowhere to put a status line, run AI Headroom next to it. It redraws every 2 seconds from Codex's local session logs:
+
+```sh
+aiheadroom watch --provider codex
+```
+
+Numbers that come from logs rather than the CLI itself are marked with `~`.
+
+### Update or uninstall
+
+| To | Run |
+|---|---|
+| **Update** | `npm install -g github:Pug-03/AI-Headroom` again, then restart your CLI |
+| **Remove from Claude Code and Codex** | `aiheadroom uninstall` (restores your previous Claude status line) |
+| **Remove the command** | `npm uninstall -g aiheadroom` |
+
+---
+
+## What you'll see
+
+### Claude Code
+
+<p align="center">
+  <img src="site/assets/claude.svg" width="720" alt="Claude Code: two status lines">
+</p>
+
+Two lines by default: **model · context bar · tokens** on top, **5-hour and weekly limits with reset times** below.
+
+### Codex CLI
+
+<p align="center">
+  <img src="site/assets/codex.svg" width="860" alt="Codex CLI footer with AI Headroom in one row">
+</p>
+
+The same information in Codex's footer, on one row.
+
+### The colors
+
+<p align="center">
+  <img src="site/assets/levels.svg" width="620" alt="Bars at 35% green, 78% orange and 94% red">
+</p>
+
+| Color | When | What to do |
+|---|---|---|
+| 🟩 green | under 70% | carry on |
+| 🟧 orange | 70% and up | wrap up the task, or start a fresh session soon |
+| 🟥 red | 90% and up | the agent may stop or compact any moment |
+
+### Narrow terminals
+
+<p align="center">
+  <img src="site/assets/resize.svg" width="620" alt="The same line at 72, 46, 30 and 20 columns">
+</p>
+
+When the window gets narrow, bars shrink first, then items drop from the end of the line.
+
+---
+
+## Make it yours
+
+Create a settings file, see what you can add, and preview it with sample data:
+
+```sh
+aiheadroom config init     # writes ~/.config/aiheadroom/config.json
+aiheadroom items           # lists everything you can show
+aiheadroom preview         # Claude layout
+aiheadroom preview --provider codex
+```
+
+Each `[ … ]` in `lines` is one line, top to bottom. Items go left to right.
 
 ```json
 {
@@ -102,66 +234,142 @@ termbar preview         # show your layout with sample data
     ["limit-5h", "limit-weekly"]
   ],
   "providers": {
-    "codex": { "lines": [["model", "context"], ["limits"]] }
-  },
-  "separator": "|",
-  "barWidth": 10,
-  "showResets": true,
-  "claude": { "oauthUsage": false }
+    "codex": {
+      "lines": [["model", "context", "tokens", "limit-5h", "limit-weekly"]],
+      "separator": "·",
+      "barWidth": 6,
+      "showResets": false
+    }
+  }
 }
 ```
 
-- `lines`: one array per line, top to bottom, at most 4 lines and 12 widgets each. Order is up to you. Widgets with no data (for example limits the CLI doesn't report) are skipped, and empty lines disappear.
-- `providers.<name>.lines`: a different layout per CLI (`claude`, `codex`).
-- Widgets: `model`, `provider`, `context`, `tokens`, `remaining`, `limit-5h`, `limit-weekly`, `limits`, `cwd`, and `text:<words>` for literal text.
-- `separator`: up to 3 characters between widgets; `""` means a single space.
-- `showResets`: show reset times after limit bars.
-- Codex shows everything on **one row**: its footer has no line breaks and rejects `\n`, so termbar joins your lines with `·`. Claude Code shows each line separately.
-- Unknown widgets and bad values fall back to defaults; `termbar doctor` lists the problems.
+Codex picks up changes within about a second. Claude Code shows them on its next refresh.
 
-The Codex provider re-reads the config on every poll, so edits show up within about a second. Claude Code reads it on its next status line refresh.
+<table>
+<tr>
+<td width="50%"><img src="site/assets/layout-minimal.svg" alt="Minimal layout"><br><b>Minimal</b><br><code>[["model", "context"]]</code></td>
+<td width="50%"><img src="site/assets/layout-dots.svg" alt="Compact layout"><br><b>Compact</b><br><code>"separator": "·", "barWidth": 6, "showResets": false</code></td>
+</tr>
+<tr>
+<td colspan="2"><img src="site/assets/layout-detailed.svg" width="520" alt="Detailed layout"><br><b>Detailed</b><br><code>[["model", "cwd"], ["context", "tokens", "remaining"], ["limit-5h"], ["limit-weekly"]]</code></td>
+</tr>
+</table>
 
-Environment: `NO_COLOR` (disable color), `TERMBAR_COLOR=0`, `COLUMNS` / `--columns N` (width budget).
+### What you can show
 
-## Layout and resizing
+| Item | Shows | Example |
+|---|---|---|
+| `model` | model name | `Sonnet 5.5` |
+| `context` | context bar and percent | `███░░░░░░░ 18%` |
+| `tokens` | tokens used / window | `182k/1.0m` |
+| `remaining` | tokens left | `818k left` |
+| `limit-5h` | 5-hour limit and reset time | `5h ████░░ 41% 4:15 PM` |
+| `limit-weekly` | weekly limit and reset time | `Weekly ███████░ 74% Nov 25` |
+| `limits` | every limit the CLI reports | |
+| `cwd` | folder name | `shop-api` |
+| `provider` | which CLI | `claude` |
+| `text:…` | your own text | `text:🐶` |
 
-termbar prints plain text; the CLI positions it. When a width is known it shrinks the
-bar (10 → 5 → none), then drops widgets from the end of a line and finally truncates with `…`, so lines never wrap. Without
-`COLUMNS`/`--columns` (Claude Code runs the command without a TTY) it assumes enough width.
+### Settings
 
-## Privacy and security
+| Setting | What it does | Default |
+|---|---|---|
+| `lines` | what each line shows, up to 4 lines of 12 items | model, context, tokens / 5h, weekly |
+| `separator` | between items, up to 3 characters; `""` for a space | `\|` |
+| `barWidth` | bar length, 0–40 (0 hides bars) | `10` |
+| `showResets` | reset times after limit bars | `true` |
+| `providers.claude` / `providers.codex` | any of the above, for one CLI only | |
+| `claude.oauthUsage` | fetch Claude limits from the usage API when Claude doesn't send them ([details](#privacy)) | `false` |
 
-- Reads Codex's `sessions/` logs and the `model` line of `config.toml` only. It never opens Codex's credentials file (a test enforces this).
-- No network access unless you opt in to the Claude usage API.
-- No telemetry.
+| Environment | Effect |
+|---|---|
+| `NO_COLOR=1` | plain text, no colors |
+| `COLUMNS=80` or `--columns 80` | width to fit into |
+| `AIHEADROOM_CLAUDE_OAUTH=1` or `--oauth-usage` | same as `claude.oauthUsage` |
 
-## Architecture
+A wrong value doesn't break anything: AI Headroom uses the default and `aiheadroom doctor` tells you what to fix.
+
+---
+
+## Privacy
+
+- **No telemetry, no account.**
+- **No network by default.** Claude Code and Codex hand their data to AI Headroom directly.
+- **The Claude usage API is opt-in.** With `claude.oauthUsage` on, and only when Claude sends no limits, AI Headroom reads the token Claude Code already stored (environment variable or macOS Keychain) and asks `api.anthropic.com` for your usage, at most once a minute. This endpoint isn't officially documented and may change.
+- **Codex:** it reads only `~/.codex/sessions/` and the `model` line of `~/.codex/config.toml`. It never opens Codex's login file; a test checks the source for this.
+- **Your settings are backed up** before any change, and `aiheadroom uninstall` restores them.
+
+---
+
+## Troubleshooting
+
+### The Codex footer went back to normal
+
+Codex stops asking a provider after one failed read and shows its default footer. Press <kbd>F2</kbd> to see why, then type `/statusline` → **Choose a status line provider** → **AI Headroom** to start it again. After updating AI Headroom, restart Codex so it loads the new version.
+
+### Why is Codex only one row?
+
+Codex's footer has no line break, and it rejects control characters like `\n`. AI Headroom joins your lines with `·` instead, and Codex wraps the row if it's wider than the window. For several lines, use Claude Code or `aiheadroom watch`.
+
+<details>
+<summary><b>I don't see my limits</b></summary>
+<br>
+
+AI Headroom only shows limits the CLI reports. They're missing when you're logged out, when your plan has no limits, or in Codex before the first reply of a session. For Claude, you can opt in to the usage API: `"claude": { "oauthUsage": true }`.
+
+</details>
+
+<details>
+<summary><b>Claude Code still shows my old status line</b></summary>
+<br>
+
+Restart Claude Code. Then check what's set:
+
+```sh
+aiheadroom doctor
+grep -A3 statusLine ~/.claude/settings.json
+```
+
+If another app rewrote `statusLine`, run `aiheadroom install --claude --wrap` again.
+
+</details>
+
+<details>
+<summary><b><code>aiheadroom: command not found</code></b></summary>
+<br>
+
+npm's global folder isn't on your `PATH`. Find it with `npm prefix -g` and add its `bin` folder to `PATH`, then open a new Terminal window.
+
+</details>
+
+<details>
+<summary><b>Codex doesn't list AI Headroom as a provider</b></summary>
+<br>
+
+Check that it's registered with `codex mcp list`, that **Custom status line** is on in `/experimental`, and that you've sent at least one message in this Codex session. The provider connects when a conversation starts.
+
+</details>
+
+---
+
+## For developers
 
 ```
 adapters/*  →  Snapshot  →  core/layout  →  render/ansi        (Claude Code, watch)
-(per CLI)      (neutral)    (bars, fit)     render/codexTree    (Codex footer)
+(one per CLI)  (neutral)    (bars, fit)     render/codexTree    (Codex footer)
 ```
 
-See [docs/ADDING_AN_ADAPTER.md](docs/ADDING_AN_ADAPTER.md).
-
-## Website
-
-`site/` is a static page (no build step) with a Thai/English toggle (`?lang=th` / `?lang=en`).
-Open `site/index.html` in a browser, or publish the folder with GitHub Pages.
-The screenshots in `site/assets/` are generated from real layout code:
-
-```sh
-npm run images
-```
-
-## Development
+Each CLI has an adapter that turns its data into one neutral `Snapshot`. Layout and drawing never see anything CLI-specific, so supporting a new CLI is one file. See [Adding an adapter](docs/ADDING_AN_ADAPTER.md).
 
 ```sh
 npm install
 npm run typecheck
 npm test
-npm run build
+npm run images     # regenerate the screenshots in site/assets
 ```
+
+`site/` is a static page with a Thai/English toggle. Open `site/index.html`, or publish it with GitHub Pages.
 
 ## License
 

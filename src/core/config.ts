@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { DEFAULT_LINES } from "./layout.ts";
@@ -22,12 +22,12 @@ export interface Config {
   providers: Record<string, Partial<LayoutConfig>>;
   claude: {
     /**
-     * Opt-in. When true AND stdin has no `rate_limits`, termbar fetches usage from
+     * Opt-in. When true AND stdin has no `rate_limits`, AI Headroom fetches usage from
      * Anthropic's OAuth usage endpoint using your own token. Off by default.
      */
     oauthUsage: boolean;
   };
-  /** Problems found while loading, shown by `termbar doctor`. */
+  /** Problems found while loading, shown by `aiheadroom doctor`. */
   warnings: string[];
 }
 
@@ -46,12 +46,30 @@ export function defaultConfig(): Config {
   };
 }
 
+export const APP = "aiheadroom";
+/** Name used before the rename to AI Headroom; still read so old setups keep working. */
+export const LEGACY_APP = "termbar";
+
+const configRoot = (env: NodeJS.ProcessEnv) => env.XDG_CONFIG_HOME || join(homedir(), ".config");
+
 export function configDir(env: NodeJS.ProcessEnv = process.env): string {
-  return join(env.XDG_CONFIG_HOME || join(homedir(), ".config"), "termbar");
+  return join(configRoot(env), APP);
 }
 
+export function legacyConfigDir(env: NodeJS.ProcessEnv = process.env): string {
+  return join(configRoot(env), LEGACY_APP);
+}
+
+/** The config file to read: the new location, or the legacy one if only that exists. */
 export function configPath(env: NodeJS.ProcessEnv = process.env): string {
-  return join(configDir(env), "config.json");
+  const current = join(configDir(env), "config.json");
+  const legacy = join(legacyConfigDir(env), "config.json");
+  return !existsSync(current) && existsSync(legacy) ? legacy : current;
+}
+
+/** Read an env var under the new prefix, falling back to the legacy TERMBAR_ prefix. */
+export function envFlag(env: NodeJS.ProcessEnv, name: string): string | undefined {
+  return env[`AIHEADROOM_${name}`] ?? env[`TERMBAR_${name}`];
 }
 
 /** Validate a `lines` value. Returns null (and records a warning) when unusable. */
@@ -63,7 +81,7 @@ function parseLines(v: unknown, where: string, warnings: string[]): string[][] |
   }
   const lines = (v as string[][]).slice(0, MAX_LINES).map((l) => l.slice(0, MAX_ITEMS_PER_LINE));
   for (const id of lines.flat()) {
-    if (!isKnownWidget(id)) warnings.push(`${where}: unknown widget "${id}" (see \`termbar items\`)`);
+    if (!isKnownWidget(id)) warnings.push(`${where}: unknown widget "${id}" (see \`aiheadroom items\`)`);
   }
   if (v.length > MAX_LINES) warnings.push(`${where}: only the first ${MAX_LINES} lines are used`);
   return lines;
@@ -111,7 +129,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       if (Object.keys(o).length > 0) cfg.providers[name] = o;
     }
   }
-  cfg.claude.oauthUsage = user.claude?.oauthUsage === true || env.TERMBAR_CLAUDE_OAUTH === "1";
+  cfg.claude.oauthUsage = user.claude?.oauthUsage === true || envFlag(env, "CLAUDE_OAUTH") === "1";
   return cfg;
 }
 

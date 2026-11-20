@@ -1,3 +1,4 @@
+import { envFlag } from "../core/config.ts";
 import { PALETTE, type Line, type Rgb, type Segment, type StyleName } from "../core/style.ts";
 
 const RESET = "\x1b[0m";
@@ -13,10 +14,10 @@ export interface AnsiOptions {
   separator?: string;
 }
 
-/** Whether to emit color. Honors https://no-color.org and TERMBAR_COLOR=0. */
+/** Whether to emit color. Honors https://no-color.org and AIHEADROOM_COLOR=0. */
 export function colorEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
   if (env.NO_COLOR !== undefined && env.NO_COLOR !== "") return false;
-  if (env.TERMBAR_COLOR === "0") return false;
+  if (envFlag(env, "COLOR") === "0") return false;
   return true;
 }
 

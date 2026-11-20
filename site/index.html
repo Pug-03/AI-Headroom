@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>termbar: status line for Claude Code and Codex CLI</title>
+  <title>AI Headroom: model, context and limits for Claude Code and Codex CLI</title>
   <meta name="description" content="See your model, context window and rate limits at the bottom of Claude Code and OpenAI Codex CLI. Colored bars, your own layout, no telemetry.">
-  <meta property="og:title" content="termbar">
+  <meta property="og:title" content="AI Headroom">
   <meta property="og:description" content="Model, context and rate limits as colored bars in Claude Code and Codex CLI.">
   <meta property="og:image" content="assets/claude.svg">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%231d2130'/><rect x='2' y='9' width='8' height='3' fill='%23dd8161'/><rect x='10' y='9' width='4' height='3' fill='%23503c32'/></svg>">
@@ -15,14 +15,14 @@
 
 <nav>
   <div class="wrap">
-    <a class="logo" href="#">term<span>bar</span></a>
+    <a class="logo" href="#">AI <span>Headroom</span></a>
     <div class="links">
       <a href="#features"><span lang="th">ฟีเจอร์</span><span lang="en">Features</span></a>
       <a href="#gallery"><span lang="th">หน้าตา</span><span lang="en">Gallery</span></a>
       <a href="#install"><span lang="th">ติดตั้ง</span><span lang="en">Install</span></a>
       <a href="#customize"><span lang="th">ปรับแต่ง</span><span lang="en">Customize</span></a>
       <a href="#faq">FAQ</a>
-      <a href="https://github.com/YOUR_USER/termbar">GitHub</a>
+      <a href="https://github.com/Pug-03/AI-Headroom">GitHub</a>
     </div>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
@@ -38,13 +38,13 @@
       <span lang="en">Your <em>limits</em> and context,<br>right at the bottom of your AI CLI</span>
     </h1>
     <p class="lead">
-      <span lang="th">termbar แสดงชื่อโมเดล, context window และโควตา 5 ชั่วโมง/รายสัปดาห์ เป็นแถบสีใน Claude Code และ OpenAI Codex CLI จัดวางได้ตามใจ ไม่ส่งข้อมูลออกไปไหน</span>
-      <span lang="en">termbar shows the model, context window and 5-hour / weekly limits as colored bars in Claude Code and OpenAI Codex CLI. Arrange it your way. No telemetry.</span>
+      <span lang="th">AI Headroom แสดงชื่อโมเดล, context window และโควตา 5 ชั่วโมง/รายสัปดาห์ เป็นแถบสีใน Claude Code และ OpenAI Codex CLI จัดวางได้ตามใจ ไม่ส่งข้อมูลออกไปไหน</span>
+      <span lang="en">AI Headroom shows the model, context window and 5-hour / weekly limits as colored bars in Claude Code and OpenAI Codex CLI. Arrange it your way. No telemetry.</span>
     </p>
 
     <div class="install">
       <span class="prompt">$</span>
-      <code id="cmd-hero">npm install -g github:YOUR_USER/termbar &amp;&amp; termbar install --wrap</code>
+      <code id="cmd-hero">npm install -g github:Pug-03/AI-Headroom &amp;&amp; aiheadroom install --wrap</code>
       <button class="copy" type="button" data-copy="cmd-hero"><span lang="th">คัดลอก</span><span lang="en">Copy</span></button>
     </div>
     <div class="badges">
@@ -55,7 +55,7 @@
     </div>
 
     <img class="shot" src="assets/claude.svg"
-         alt="Claude Code with termbar: model, context bar and token count on top; 5-hour and weekly limit bars below">
+         alt="Claude Code with AI Headroom: model, context bar and token count on top; 5-hour and weekly limit bars below">
   </div>
 </header>
 
@@ -75,7 +75,7 @@
       <div class="card">
         <span class="icon">⏱️</span>
         <h3><span lang="th">โควตาพร้อมเวลารีเซ็ต</span><span lang="en">Limits with reset times</span></h3>
-        <p><span lang="th">โควตา 5 ชั่วโมงและรายสัปดาห์ บอกว่าจะรีเซ็ตกี่โมง ถ้า CLI ไม่ได้ส่งค่ามา termbar จะไม่แต่งตัวเลขขึ้นเอง</span><span lang="en">5-hour and weekly limits with the time they reset. If the CLI doesn't report a limit, termbar won't make one up.</span></p>
+        <p><span lang="th">โควตา 5 ชั่วโมงและรายสัปดาห์ บอกว่าจะรีเซ็ตกี่โมง ถ้า CLI ไม่ได้ส่งค่ามา AI Headroom จะไม่แต่งตัวเลขขึ้นเอง</span><span lang="en">5-hour and weekly limits with the time they reset. If the CLI doesn't report a limit, AI Headroom won't make one up.</span></p>
       </div>
       <div class="card">
         <span class="icon">🎨</span>
@@ -121,7 +121,7 @@
 
     <div class="gallery">
       <figure>
-        <img class="shot" src="assets/claude.svg" loading="lazy" alt="termbar in Claude Code, two lines">
+        <img class="shot" src="assets/claude.svg" loading="lazy" alt="AI Headroom in Claude Code, two lines">
         <figcaption>
           <strong>Claude Code</strong>
           <span lang="th">ค่าเริ่มต้นมีสองบรรทัด บนเป็นโมเดล, context และ token ล่างเป็นโควตา 5h และ Weekly พร้อมเวลารีเซ็ต</span>
@@ -130,11 +130,11 @@
       </figure>
 
       <figure>
-        <img class="shot" src="assets/codex.svg" loading="lazy" alt="termbar in the Codex CLI footer, one row">
+        <img class="shot" src="assets/codex.svg" loading="lazy" alt="AI Headroom in the Codex CLI footer, one row">
         <figcaption>
           <strong>OpenAI Codex CLI</strong>
-          <span lang="th">ใช้ระบบ status line provider ของ Codex เอง ฟุตเตอร์ของ Codex มีได้แถวเดียว termbar จึงต่อบรรทัดด้วย <code>·</code></span>
-          <span lang="en">Uses Codex's own status line provider. The Codex footer is a single row, so termbar joins your lines with <code>·</code>.</span>
+          <span lang="th">ใช้ระบบ status line provider ของ Codex เอง ฟุตเตอร์ของ Codex มีได้แถวเดียว AI Headroom จึงต่อบรรทัดด้วย <code>·</code></span>
+          <span lang="en">Uses Codex's own status line provider. The Codex footer is a single row, so AI Headroom joins your lines with <code>·</code>.</span>
         </figcaption>
       </figure>
 
@@ -211,14 +211,14 @@
   <div class="wrap">
     <h2><span lang="th">ติดตั้ง</span><span lang="en">Install</span></h2>
     <p class="sub">
-      <span lang="th">ต้องมี Node.js 22.18 ขึ้นไป termbar จะไม่ทับ status line เดิมของคุณถ้าไม่สั่ง</span>
-      <span lang="en">Requires Node.js 22.18 or newer. termbar never overwrites your existing status line unless you ask.</span>
+      <span lang="th">ต้องมี Node.js 22.18 ขึ้นไป AI Headroom จะไม่ทับ status line เดิมของคุณถ้าไม่สั่ง</span>
+      <span lang="en">Requires Node.js 22.18 or newer. AI Headroom never overwrites your existing status line unless you ask.</span>
     </p>
 
     <pre><span class="c"># 1. install</span>
-npm install -g github:YOUR_USER/termbar
+npm install -g github:Pug-03/AI-Headroom
 <span class="c"># 2. check</span>
-termbar doctor</pre>
+aiheadroom doctor</pre>
 
     <div class="tabs" role="tablist">
       <button type="button" role="tab" aria-selected="true" aria-controls="tab-claude" id="t-claude">Claude Code</button>
@@ -230,11 +230,11 @@ termbar doctor</pre>
       <ol class="steps">
         <li>
           <span lang="th">ดูก่อนว่าจะเปลี่ยนอะไร</span><span lang="en">Preview the change</span>
-          <pre>termbar install --claude --wrap --dry-run</pre>
+          <pre>aiheadroom install --claude --wrap --dry-run</pre>
         </li>
         <li>
           <span lang="th">ติดตั้งจริง</span><span lang="en">Install</span>
-          <pre>termbar install --claude --wrap</pre>
+          <pre>aiheadroom install --claude --wrap</pre>
           <p><span lang="th"><code>--wrap</code> เก็บคำสั่งเดิมไว้ข้างหน้า ถ้าอยากแทนที่เลยใช้ <code>--force</code> ทั้งสองแบบสำรอง <code>settings.json</code> ก่อนแก้</span><span lang="en"><code>--wrap</code> keeps your current command in front; <code>--force</code> replaces it. Both back up <code>settings.json</code> first.</span></p>
         </li>
         <li><span lang="th">รีสตาร์ท Claude Code</span><span lang="en">Restart Claude Code.</span></li>
@@ -244,27 +244,27 @@ termbar doctor</pre>
     <div class="panel" id="tab-codex" role="tabpanel" aria-labelledby="t-codex" hidden>
       <ol class="steps">
         <li>
-          <span lang="th">ลงทะเบียน termbar กับ Codex</span><span lang="en">Register termbar with Codex</span>
-          <pre>termbar install --codex</pre>
-          <p><span lang="th">คำสั่งนี้รัน <code>codex mcp add termbar …</code> ให้</span><span lang="en">This runs <code>codex mcp add termbar …</code> for you.</span></p>
+          <span lang="th">ลงทะเบียน AI Headroom กับ Codex</span><span lang="en">Register AI Headroom with Codex</span>
+          <pre>aiheadroom install --codex</pre>
+          <p><span lang="th">คำสั่งนี้รัน <code>codex mcp add aiheadroom …</code> ให้</span><span lang="en">This runs <code>codex mcp add aiheadroom …</code> for you.</span></p>
         </li>
         <li><span lang="th">ใน Codex พิมพ์ <code>/experimental</code> ติ๊ก <b>Custom status line</b> แล้วรีสตาร์ท Codex</span><span lang="en">In Codex, open <code>/experimental</code>, check <b>Custom status line</b>, and restart Codex.</span></li>
-        <li><span lang="th">ส่งข้อความหนึ่งครั้ง แล้วพิมพ์ <code>/statusline</code> → <b>Choose a status line provider</b> → <b>termbar</b></span><span lang="en">Send one message, then <code>/statusline</code> → <b>Choose a status line provider</b> → <b>termbar</b>.</span></li>
+        <li><span lang="th">ส่งข้อความหนึ่งครั้ง แล้วพิมพ์ <code>/statusline</code> → <b>Choose a status line provider</b> → <b>AI Headroom</b></span><span lang="en">Send one message, then <code>/statusline</code> → <b>Choose a status line provider</b> → <b>AI Headroom</b>.</span></li>
       </ol>
       <p class="note">
-        <span lang="th">ทำครั้งเดียว Codex จะจำไว้ ถ้าวันหนึ่งฟุตเตอร์กลับเป็นแบบเดิม แปลว่า provider อ่านพลาด กด F2 เพื่อดูสาเหตุ แล้วเลือก termbar ใน <code>/statusline</code> ใหม่ ระบบ provider ของ Codex ยังเป็น experimental</span>
-        <span lang="en">You only do this once. If the footer ever falls back to the default, a read failed: press F2 to see why, then reselect termbar in <code>/statusline</code>. Codex's provider API is still experimental.</span>
+        <span lang="th">ทำครั้งเดียว Codex จะจำไว้ ถ้าวันหนึ่งฟุตเตอร์กลับเป็นแบบเดิม แปลว่า provider อ่านพลาด กด F2 เพื่อดูสาเหตุ แล้วเลือก AI Headroom ใน <code>/statusline</code> ใหม่ ระบบ provider ของ Codex ยังเป็น experimental</span>
+        <span lang="en">You only do this once. If the footer ever falls back to the default, a read failed: press F2 to see why, then reselect AI Headroom in <code>/statusline</code>. Codex's provider API is still experimental.</span>
       </p>
     </div>
 
     <div class="panel" id="tab-other" role="tabpanel" aria-labelledby="t-other" hidden>
-      <p><span lang="th">ถ้า CLI ไม่มีที่ให้ใส่ status line ให้เปิด termbar ในแผง tmux หรือแท็บข้างๆ มันจะวาดใหม่ทุก 2 วินาที</span><span lang="en">If a CLI has no status line hook, run termbar in a tmux pane or a spare tab. It redraws every 2 seconds.</span></p>
-      <pre>termbar watch --provider codex --interval 2</pre>
+      <p><span lang="th">ถ้า CLI ไม่มีที่ให้ใส่ status line ให้เปิด AI Headroom ในแผง tmux หรือแท็บข้างๆ มันจะวาดใหม่ทุก 2 วินาที</span><span lang="en">If a CLI has no status line hook, run AI Headroom in a tmux pane or a spare tab. It redraws every 2 seconds.</span></p>
+      <pre>aiheadroom watch --provider codex --interval 2</pre>
     </div>
 
     <h3 style="margin-top:40px"><span lang="th">ถอดออก</span><span lang="en">Uninstall</span></h3>
-    <pre>termbar uninstall          <span class="c"># Claude + Codex; restores your previous status line</span>
-npm uninstall -g termbar</pre>
+    <pre>aiheadroom uninstall          <span class="c"># Claude + Codex; restores your previous status line</span>
+npm uninstall -g aiheadroom</pre>
   </div>
 </section>
 
@@ -278,10 +278,10 @@ npm uninstall -g termbar</pre>
 
     <div class="two">
       <div>
-        <pre>termbar config init   <span class="c"># create the file</span>
-termbar items         <span class="c"># list widgets</span>
-termbar preview       <span class="c"># try it with sample data</span></pre>
-        <pre><span class="c">// ~/.config/termbar/config.json</span>
+        <pre>aiheadroom config init   <span class="c"># create the file</span>
+aiheadroom items         <span class="c"># list widgets</span>
+aiheadroom preview       <span class="c"># try it with sample data</span></pre>
+        <pre><span class="c">// ~/.config/aiheadroom/config.json</span>
 {
   <span class="k">"lines"</span>: [
     [<span class="s">"model"</span>, <span class="s">"context"</span>, <span class="s">"tokens"</span>],
@@ -312,8 +312,8 @@ termbar preview       <span class="c"># try it with sample data</span></pre>
           </tbody>
         </table>
         <p class="note">
-          <span lang="th">ใส่ค่าผิดไม่พัง termbar จะใช้ค่าเริ่มต้นแทน และ <code>termbar doctor</code> จะบอกว่าผิดตรงไหน</span>
-          <span lang="en">Bad values don't break anything: termbar falls back to defaults and <code>termbar doctor</code> tells you what's wrong.</span>
+          <span lang="th">ใส่ค่าผิดไม่พัง AI Headroom จะใช้ค่าเริ่มต้นแทน และ <code>aiheadroom doctor</code> จะบอกว่าผิดตรงไหน</span>
+          <span lang="en">Bad values don't break anything: AI Headroom falls back to defaults and <code>aiheadroom doctor</code> tells you what's wrong.</span>
         </p>
       </div>
     </div>
@@ -325,31 +325,31 @@ termbar preview       <span class="c"># try it with sample data</span></pre>
     <h2>FAQ</h2>
     <details>
       <summary><span lang="th">ข้อมูลมาจากไหน</span><span lang="en">Where does the data come from?</span></summary>
-      <p><span lang="th">Claude Code ส่ง JSON มาให้ทาง stdin ทุกครั้งที่รีเฟรช ส่วน Codex ส่งสถานะของ thread มาให้ provider ประมาณทุก 1 วินาที termbar แค่อ่านแล้ววาด</span><span lang="en">Claude Code pipes JSON on stdin on every refresh. Codex passes thread state to the provider about once a second. termbar just reads it and draws.</span></p>
+      <p><span lang="th">Claude Code ส่ง JSON มาให้ทาง stdin ทุกครั้งที่รีเฟรช ส่วน Codex ส่งสถานะของ thread มาให้ provider ประมาณทุก 1 วินาที AI Headroom แค่อ่านแล้ววาด</span><span lang="en">Claude Code pipes JSON on stdin on every refresh. Codex passes thread state to the provider about once a second. AI Headroom just reads it and draws.</span></p>
     </details>
     <details>
       <summary><span lang="th">ทำไม Codex มีแถวเดียว</span><span lang="en">Why is Codex a single row?</span></summary>
-      <p><span lang="th">ฟุตเตอร์ของ Codex ไม่มีคำสั่งขึ้นบรรทัดใหม่ และไม่รับตัวอักษรควบคุมอย่าง <code>\n</code> termbar จึงต่อบรรทัดด้วย <code>·</code> ถ้ายาวเกินจอ Codex จะตัดขึ้นบรรทัดให้เอง</span><span lang="en">The Codex footer has no line-break element and rejects control characters like <code>\n</code>, so termbar joins lines with <code>·</code>. Codex wraps it if it's wider than the terminal.</span></p>
+      <p><span lang="th">ฟุตเตอร์ของ Codex ไม่มีคำสั่งขึ้นบรรทัดใหม่ และไม่รับตัวอักษรควบคุมอย่าง <code>\n</code> AI Headroom จึงต่อบรรทัดด้วย <code>·</code> ถ้ายาวเกินจอ Codex จะตัดขึ้นบรรทัดให้เอง</span><span lang="en">The Codex footer has no line-break element and rejects control characters like <code>\n</code>, so AI Headroom joins lines with <code>·</code>. Codex wraps it if it's wider than the terminal.</span></p>
     </details>
     <details>
       <summary><span lang="th">ทำไมบางทีไม่เห็นโควตา</span><span lang="en">Why don't I see my limits?</span></summary>
-      <p><span lang="th">termbar แสดงเฉพาะค่าที่ CLI ส่งมาจริง ถ้ายังไม่ได้ล็อกอิน หรือแพ็กเกจไม่มีโควตา บรรทัดนั้นจะหายไป สำหรับ Claude เปิดการดึงผ่าน usage API ได้ (ต้องเปิดเอง): <code>{"claude": {"oauthUsage": true}}</code></span><span lang="en">termbar only shows what the CLI reports. If you're logged out or your plan has no limits, that line disappears. For Claude you can opt in to the usage API: <code>{"claude": {"oauthUsage": true}}</code>.</span></p>
+      <p><span lang="th">AI Headroom แสดงเฉพาะค่าที่ CLI ส่งมาจริง ถ้ายังไม่ได้ล็อกอิน หรือแพ็กเกจไม่มีโควตา บรรทัดนั้นจะหายไป สำหรับ Claude เปิดการดึงผ่าน usage API ได้ (ต้องเปิดเอง): <code>{"claude": {"oauthUsage": true}}</code></span><span lang="en">AI Headroom only shows what the CLI reports. If you're logged out or your plan has no limits, that line disappears. For Claude you can opt in to the usage API: <code>{"claude": {"oauthUsage": true}}</code>.</span></p>
     </details>
     <details>
       <summary><span lang="th">ใช้กับ AFK Pug หรือ status line อื่นได้ไหม</span><span lang="en">Does it work with AFK Pug or my own status line?</span></summary>
-      <p><span lang="th">ได้ ใช้ <code>--wrap</code> คำสั่งเดิมยังได้รับ stdin ตามปกติ termbar แค่เป็นตัววาด และ <code>termbar uninstall</code> คืนคำสั่งเดิมให้ครบทุกตัวอักษร</span><span lang="en">Yes. With <code>--wrap</code> your command still receives stdin; termbar only does the drawing. <code>termbar uninstall</code> restores the exact original command.</span></p>
+      <p><span lang="th">ได้ ใช้ <code>--wrap</code> คำสั่งเดิมยังได้รับ stdin ตามปกติ AI Headroom แค่เป็นตัววาด และ <code>aiheadroom uninstall</code> คืนคำสั่งเดิมให้ครบทุกตัวอักษร</span><span lang="en">Yes. With <code>--wrap</code> your command still receives stdin; AI Headroom only does the drawing. <code>aiheadroom uninstall</code> restores the exact original command.</span></p>
     </details>
     <details>
       <summary><span lang="th">ปลอดภัยไหม</span><span lang="en">Is it safe?</span></summary>
-      <p><span lang="th">termbar อ่านแค่ session log และบรรทัด <code>model</code> ใน config ของ Codex ไม่เปิดไฟล์รหัสผ่าน ไม่มี telemetry และไม่ต่อเน็ตถ้าคุณไม่เปิด usage API เอง โค้ดเป็น MIT อ่านได้ทุกบรรทัด</span><span lang="en">termbar reads only Codex session logs and the <code>model</code> line of its config, never the credentials file. No telemetry, no network unless you enable the usage API. MIT-licensed, every line readable.</span></p>
+      <p><span lang="th">AI Headroom อ่านแค่ session log และบรรทัด <code>model</code> ใน config ของ Codex ไม่เปิดไฟล์รหัสผ่าน ไม่มี telemetry และไม่ต่อเน็ตถ้าคุณไม่เปิด usage API เอง โค้ดเป็น MIT อ่านได้ทุกบรรทัด</span><span lang="en">AI Headroom reads only Codex session logs and the <code>model</code> line of its config, never the credentials file. No telemetry, no network unless you enable the usage API. MIT-licensed, every line readable.</span></p>
     </details>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <span>termbar · MIT License</span>
-    <span><a href="https://github.com/YOUR_USER/termbar">GitHub</a> · <a href="https://github.com/YOUR_USER/termbar/blob/main/docs/ADDING_AN_ADAPTER.md"><span lang="th">เพิ่ม adapter</span><span lang="en">Add an adapter</span></a></span>
+    <span>AI Headroom · MIT License</span>
+    <span><a href="https://github.com/Pug-03/AI-Headroom">GitHub</a> · <a href="https://github.com/Pug-03/AI-Headroom/blob/main/docs/ADDING_AN_ADAPTER.md"><span lang="th">เพิ่ม adapter</span><span lang="en">Add an adapter</span></a></span>
   </div>
 </footer>
 
@@ -358,13 +358,13 @@ termbar preview       <span class="c"># try it with sample data</span></pre>
   const setLang = (l) => {
     document.documentElement.lang = l;
     document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === l)));
-    try { localStorage.setItem("termbar-lang", l); } catch {}
+    try { localStorage.setItem("aiheadroom-lang", l); } catch {}
   };
   document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.lang)));
   let saved = new URLSearchParams(location.search).get("lang");
   if (saved !== "th" && saved !== "en") {
     saved = null;
-    try { saved = localStorage.getItem("termbar-lang"); } catch {}
+    try { saved = localStorage.getItem("aiheadroom-lang"); } catch {}
   }
   setLang(saved || ((navigator.language || "").startsWith("th") ? "th" : "en"));
 

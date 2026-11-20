@@ -111,9 +111,9 @@ test("codex tree: lines joined in one row with a · node; rows use gap for spaci
 /* ---------- Config ---------- */
 
 function withConfig(json: unknown) {
-  const dir = mkdtempSync(join(tmpdir(), "termbar-cfg-"));
-  mkdirSync(join(dir, "termbar"));
-  writeFileSync(join(dir, "termbar", "config.json"), typeof json === "string" ? json : JSON.stringify(json));
+  const dir = mkdtempSync(join(tmpdir(), "aih-cfg-"));
+  mkdirSync(join(dir, "aiheadroom"));
+  writeFileSync(join(dir, "aiheadroom", "config.json"), typeof json === "string" ? json : JSON.stringify(json));
   return loadConfig({ XDG_CONFIG_HOME: dir });
 }
 
@@ -141,7 +141,7 @@ test("config: bad values fall back to defaults with warnings", () => {
 });
 
 test("config: missing file is fine; oauth stays off by default", () => {
-  const cfg = loadConfig({ XDG_CONFIG_HOME: mkdtempSync(join(tmpdir(), "termbar-none-")) });
+  const cfg = loadConfig({ XDG_CONFIG_HOME: mkdtempSync(join(tmpdir(), "aih-none-")) });
   assert.deepEqual(cfg.warnings, []);
   assert.equal(cfg.claude.oauthUsage, false);
 });
@@ -160,4 +160,20 @@ test("config: per-provider separator, barWidth and showResets override the globa
   const bad = withConfig({ providers: { codex: { barWidth: -1, showResets: "no" } } });
   assert.ok(bad.warnings.some((w) => w.startsWith("providers.codex.barWidth")));
   assert.ok(bad.warnings.some((w) => w.startsWith("providers.codex.showResets")));
+});
+
+test("config: falls back to the pre-rename ~/.config/termbar file; new file wins when both exist", () => {
+  const dir = mkdtempSync(join(tmpdir(), "aih-legacy-"));
+  mkdirSync(join(dir, "termbar"));
+  writeFileSync(join(dir, "termbar", "config.json"), JSON.stringify({ separator: "/" }));
+  assert.equal(loadConfig({ XDG_CONFIG_HOME: dir }).separator, "/");
+  mkdirSync(join(dir, "aiheadroom"));
+  writeFileSync(join(dir, "aiheadroom", "config.json"), JSON.stringify({ separator: "·" }));
+  assert.equal(loadConfig({ XDG_CONFIG_HOME: dir }).separator, "·");
+});
+
+test("env: AIHEADROOM_ flags, with legacy TERMBAR_ still honored", () => {
+  const d = mkdtempSync(join(tmpdir(), "aih-env-"));
+  assert.equal(loadConfig({ XDG_CONFIG_HOME: d, AIHEADROOM_CLAUDE_OAUTH: "1" }).claude.oauthUsage, true);
+  assert.equal(loadConfig({ XDG_CONFIG_HOME: d, TERMBAR_CLAUDE_OAUTH: "1" }).claude.oauthUsage, true);
 });

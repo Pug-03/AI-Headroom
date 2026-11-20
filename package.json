@@ -1,17 +1,18 @@
 {
-  "name": "termbar",
+  "name": "aiheadroom",
   "version": "0.1.0",
-  "description": "A status line / usage monitor for AI coding CLIs (Claude Code, OpenAI Codex CLI). Adapter-based and extensible.",
+  "description": "AI Headroom: see your model, context window and rate limits as colored bars at the bottom of Claude Code and OpenAI Codex CLI.",
   "type": "module",
   "license": "MIT",
   "bin": {
-    "termbar": "dist/cli.js"
+    "aiheadroom": "dist/cli.js"
   },
   "files": [
     "dist",
     "docs",
     "install.sh",
     "README.md",
+    "README.th.md",
     "LICENSE"
   ],
   "engines": {
@@ -25,14 +26,28 @@
     "images": "node scripts/gen-images.ts"
   },
   "keywords": [
-    "statusline",
+    "ai",
     "claude-code",
     "codex",
+    "codex-cli",
+    "statusline",
+    "status-line",
+    "rate-limit",
+    "context-window",
+    "tokens",
     "cli",
-    "usage"
+    "terminal"
   ],
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pug-03/AI-Headroom.git"
+  },
+  "homepage": "https://github.com/Pug-03/AI-Headroom#readme",
+  "bugs": {
+    "url": "https://github.com/Pug-03/AI-Headroom/issues"
   }
 }

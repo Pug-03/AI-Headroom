@@ -3,14 +3,14 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSyn
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { configDir } from "./core/config.ts";
+import { APP, configDir, LEGACY_APP, legacyConfigDir } from "./core/config.ts";
 
 const CLI = join(dirname(fileURLToPath(import.meta.url)), "cli.js");
 
 export interface InstallOptions {
   force: boolean;
   dryRun: boolean;
-  /** Keep the existing statusLine command in front and run termbar as the renderer. */
+  /** Keep the existing statusLine command in front and run AI Headroom as the renderer. */
   wrap: boolean;
 }
 
@@ -28,17 +28,18 @@ const shSingle = (s: string) => `'${s.replaceAll("'", "'\\''")}'`;
 
 export const claudeRenderCommand = (cli = CLI) => `node ${quote(cli)} render --provider claude`;
 
-const isTermbarCommand = (cmd: unknown): boolean =>
-  typeof cmd === "string" && (cmd.includes(CLI) || cmd.includes("termbar"));
+/** True for a statusLine command we installed, including ones from before the rename. */
+const isOurCommand = (cmd: unknown): boolean =>
+  typeof cmd === "string" && (cmd.includes(CLI) || cmd.includes(APP) || cmd.includes(LEGACY_APP));
 
 /**
  * Wrap an existing statusLine command so it still receives stdin (and keeps
- * updating its own state) while termbar draws the line.
+ * updating its own state) while AI Headroom draws the line.
  *
  * - AFK Pug form `if [ -x 'P' ]; then 'P' '<inner>'; else <inner>; fi`:
- *   only `<inner>` is swapped for termbar, so AFK Pug stays in front.
+ *   only `<inner>` is swapped for our command, so AFK Pug stays in front.
  * - Any other command: run it with a copy of stdin and discard its output,
- *   then run termbar with the same stdin.
+ *   then run ours with the same stdin.
  */
 export function buildWrapped(original: string, tb: string): string {
   const m = /^if \[ -x '([^']+)' \]; then '\1' '(?:[^']|'\\'')*'; else .*; fi$/s.exec(original.trim());
@@ -53,12 +54,16 @@ const stamp = () => Math.floor(Date.now() / 1000);
 
 function backup(path: string): string | null {
   if (!existsSync(path)) return null;
-  const dest = `${path}.termbar-backup-${stamp()}`;
+  const dest = `${path}.${APP}-backup-${stamp()}`;
   copyFileSync(path, dest);
   return dest;
 }
 
-const previousFile = () => join(configDir(), "previous-claude-statusline.json");
+const PREV = "previous-claude-statusline.json";
+const previousFile = () => join(configDir(), PREV);
+/** Saved original command: new location first, then the pre-rename one. */
+const savedPrevious = (): string | null =>
+  [previousFile(), join(legacyConfigDir(), PREV)].find((p) => existsSync(p)) ?? null;
 
 export function installClaude({ force, dryRun, wrap }: InstallOptions): string {
   const path = claudeSettingsPath();
@@ -66,11 +71,11 @@ export function installClaude({ force, dryRun, wrap }: InstallOptions): string {
   const existing = settings.statusLine as { type?: string; command?: string } | undefined;
   const tb = claudeRenderCommand();
 
-  if (existing && isTermbarCommand(existing.command)) {
-    return `Claude Code: termbar is already installed in ${path}. Run \`termbar uninstall --claude\` first to change modes.`;
+  if (existing && isOurCommand(existing.command)) {
+    return `Claude Code: AI Headroom is already installed in ${path}. Run \`aiheadroom uninstall --claude\` first to change modes.`;
   }
   if (existing && !force && !wrap) {
-    return `Claude Code already has a statusLine configured in ${path}:\n  ${existing.command}\nRe-run with --wrap to keep it in front of termbar, or --force to replace it.`;
+    return `Claude Code already has a statusLine configured in ${path}:\n  ${existing.command}\nRe-run with --wrap to keep it in front of AI Headroom, or --force to replace it.`;
   }
   const command = existing && wrap && typeof existing.command === "string" ? buildWrapped(existing.command, tb) : tb;
   const mode = existing && wrap ? "wrap" : "set";
@@ -93,9 +98,9 @@ export function uninstallClaude(dryRun = false): string {
   const path = claudeSettingsPath();
   const settings = readJson(path);
   const cur = settings.statusLine as { command?: string } | undefined;
-  if (!cur || !isTermbarCommand(cur.command)) return "Claude Code: no termbar statusLine found.";
-  const prev = previousFile();
-  const restored = existsSync(prev) ? (JSON.parse(readFileSync(prev, "utf8")) as unknown) : undefined;
+  if (!cur || !isOurCommand(cur.command)) return "Claude Code: no AI Headroom statusLine found.";
+  const prev = savedPrevious();
+  const restored = prev ? (JSON.parse(readFileSync(prev, "utf8")) as unknown) : undefined;
   if (dryRun) {
     return `[dry-run] would ${restored ? "restore the previous statusLine" : "remove statusLine"} in ${path}`;
   }
@@ -103,31 +108,38 @@ export function uninstallClaude(dryRun = false): string {
   if (restored) settings.statusLine = restored;
   else delete settings.statusLine;
   writeFileSync(path, `${JSON.stringify(settings, null, 2)}\n`);
-  if (restored) rmSync(prev);
-  return `Claude Code: termbar removed, ${restored ? "previous statusLine restored" : "statusLine deleted"}${bak ? ` (backup: ${bak})` : ""}.`;
+  if (prev) rmSync(prev);
+  return `Claude Code: AI Headroom removed, ${restored ? "previous statusLine restored" : "statusLine deleted"}${bak ? ` (backup: ${bak})` : ""}.`;
 }
 
-const codexArgs = ["mcp", "add", "termbar", "--", "node", CLI, "mcp"];
+const codexArgs = ["mcp", "add", APP, "--", "node", CLI, "mcp"];
 
 export function installCodex({ dryRun }: InstallOptions): string {
   const cmd = `codex ${codexArgs.map((a) => (a.includes(" ") ? quote(a) : a)).join(" ")}`;
   const next =
     "Then in Codex: enable **Custom status line** in /experimental, restart the TUI,\n" +
-    "open /statusline, choose \"Choose a status line provider\", and select termbar.";
+    "open /statusline, choose \"Choose a status line provider\", and select AI Headroom.";
   if (dryRun) return `[dry-run] would run: ${cmd}\n${next}`;
   try {
     execFileSync("codex", codexArgs, { stdio: "pipe" });
   } catch (e) {
     return `Codex: could not run \`codex mcp add\` (${(e as Error).message.split("\n")[0]}).\nRun it yourself:\n  ${cmd}\n${next}`;
   }
-  return `Codex: MCP provider "termbar" registered.\n${next}`;
+  return `Codex: MCP provider "${APP}" registered.\n${next}`;
 }
 
+/** Removes the provider under its current name and its pre-rename name. */
 export function uninstallCodex(): string {
-  try {
-    execFileSync("codex", ["mcp", "remove", "termbar"], { stdio: "pipe" });
-    return "Codex: MCP provider \"termbar\" removed.";
-  } catch {
-    return "Codex: nothing removed (run `codex mcp remove termbar` manually if needed).";
+  const removed: string[] = [];
+  for (const name of [APP, LEGACY_APP]) {
+    try {
+      execFileSync("codex", ["mcp", "remove", name], { stdio: "pipe" });
+      removed.push(name);
+    } catch {
+      // not registered under this name
+    }
   }
+  return removed.length > 0
+    ? `Codex: MCP provider ${removed.map((n) => `"${n}"`).join(" and ")} removed.`
+    : `Codex: nothing removed (run \`codex mcp remove ${APP}\` manually if needed).`;
 }

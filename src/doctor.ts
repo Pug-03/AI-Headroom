@@ -22,7 +22,7 @@ export function doctor(): string {
     mark(codexV !== null, codexV ? `codex found: ${codexV}` : "codex not found on PATH"),
     mark(existsSync(join(codexHome(), "sessions")), `codex sessions dir: ${join(codexHome(), "sessions")}`),
     mark(existsSync(join(claudeDir, "settings.json")), `claude settings: ${join(claudeDir, "settings.json")}`),
-    mark(existsSync(configPath()), `termbar config (optional): ${configPath()}`),
+    mark(existsSync(configPath()), `config (optional): ${configPath()}`),
     ...loadConfig().warnings.map((w) => mark(false, `config: ${w}`)),
   ].join("\n");
 }

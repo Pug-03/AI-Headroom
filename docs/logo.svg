@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" role="img" aria-label="AI Headroom logo">
+  <rect width="240" height="240" rx="54" fill="#1d2130"/>
+  <rect x="1.5" y="1.5" width="237" height="237" rx="52.5" fill="none" stroke="#2f3547" stroke-width="3"/>
+  <!-- headroom line: the space you still have -->
+  <line x1="48" y1="62" x2="192" y2="62" stroke="#6c7489" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 14"/>
+  <!-- three bars: green, orange, red -->
+  <rect x="48" y="92" width="144" height="26" rx="6" fill="#503c32"/>
+  <rect x="48" y="92" width="62" height="26" rx="6" fill="#7fb38a"/>
+  <rect x="48" y="132" width="144" height="26" rx="6" fill="#503c32"/>
+  <rect x="48" y="132" width="106" height="26" rx="6" fill="#dd8161"/>
+  <rect x="48" y="172" width="144" height="26" rx="6" fill="#503c32"/>
+  <rect x="48" y="172" width="132" height="26" rx="6" fill="#e25454"/>
+</svg>

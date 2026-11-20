@@ -7,7 +7,7 @@ import type { Limit } from "../core/snapshot.ts";
 
 /**
  * OPT-IN ONLY. Called only when config.claude.oauthUsage is true (or
- * TERMBAR_CLAUDE_OAUTH=1) and stdin carried no rate_limits. Uses the token
+ * AIHEADROOM_CLAUDE_OAUTH=1) and stdin carried no rate_limits. Uses the token
  * Claude Code already stored for you; nothing is sent anywhere but
  * api.anthropic.com. The endpoint is undocumented and may change.
  */
@@ -29,7 +29,7 @@ async function getToken(env: NodeJS.ProcessEnv): Promise<string | null> {
 }
 
 function cachePath(): string {
-  const dir = join(tmpdir(), `termbar-${userInfo().uid}`);
+  const dir = join(tmpdir(), `aiheadroom-${userInfo().uid}`);
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   return join(dir, "claude-usage.json");
 }
@@ -73,7 +73,7 @@ export async function fetchOauthLimits(env: NodeJS.ProcessEnv = process.env): Pr
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
         "anthropic-beta": "oauth-2025-04-20",
-        "User-Agent": "termbar",
+        "User-Agent": "aiheadroom",
       },
     });
     if (!res.ok) return [];

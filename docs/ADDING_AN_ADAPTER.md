@@ -32,9 +32,9 @@ interface Snapshot {
 2. Register it in `src/adapters/index.ts`.
 3. Put a sample of the CLI's real output in `test/fixtures/` (remove personal data) and add a test next to `test/adapters.test.ts`.
 4. Wire it into the CLI. Pick whichever the CLI supports:
-   - **Runs a command and pipes JSON** (Claude Code): `termbar render --provider mycli`.
+   - **Runs a command and pipes JSON** (Claude Code): `aiheadroom render --provider mycli`.
    - **Native provider/plugin API** (Codex: MCP): write a small server in `src/<name>/` that builds a `Snapshot`, calls `layout()` and returns the result in the CLI's format (see `src/render/codexTree.ts`).
-   - **Neither**: `termbar watch --provider mycli` in a tmux pane or second terminal.
+   - **Neither**: `aiheadroom watch --provider mycli` in a tmux pane or second terminal.
 
 ## Rules
 

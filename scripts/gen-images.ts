@@ -1,5 +1,5 @@
 /**
- * Generate the screenshots used by the website and README from real termbar
+ * Generate the screenshots used by the website and README from real AI Headroom
  * output: every image goes through the same layout() code the CLI uses.
  *
  *   npm run images      → site/assets/*.svg
@@ -251,5 +251,5 @@ const L = (s: Snapshot, o: LayoutOptions = {}) => layout(s, { now: NOW, ...o });
     limits: codex.limits.map((l) => ({ ...l, source: "log" as const })),
   };
   const lines = runs(L(est, { lines: [["model", "tokens"], ["limits"]] }));
-  save("estimate.svg", terminal("termbar watch --provider codex", lines.map((r) => ({ kind: "text", runs: r })), 80));
+  save("estimate.svg", terminal("aiheadroom watch --provider codex", lines.map((r) => ({ kind: "text", runs: r })), 80));
 }

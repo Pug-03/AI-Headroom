@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -8,11 +8,11 @@ import { buildWrapped, installClaude, uninstallClaude } from "../src/install.ts"
 
 const AFK =
   "if [ -x '/Users/me/.afkpug/bin/afkpug-statusline' ]; then '/Users/me/.afkpug/bin/afkpug-statusline' 'bash ~/.claude/statusline.sh'; else bash ~/.claude/statusline.sh; fi";
-const TB = 'node "/opt/termbar/dist/cli.js" render --provider claude';
+const TB = 'node "/opt/aiheadroom/dist/cli.js" render --provider claude';
 
 /** Point installer config and Claude settings at a temp dir. */
 function sandbox(statusLine?: unknown) {
-  const dir = mkdtempSync(join(tmpdir(), "termbar-inst-"));
+  const dir = mkdtempSync(join(tmpdir(), "aih-inst-"));
   process.env.CLAUDE_CONFIG_DIR = join(dir, "claude");
   process.env.XDG_CONFIG_HOME = join(dir, "xdg");
   const file = join(dir, "claude", "settings.json");
@@ -36,12 +36,12 @@ test("buildWrapped: AFK Pug stays in front and only the inner command is replace
     out,
     `if [ -x '/Users/me/.afkpug/bin/afkpug-statusline' ]; then '/Users/me/.afkpug/bin/afkpug-statusline' '${TB}'; else ${TB}; fi`,
   );
-  assert.ok(out.indexOf("afkpug-statusline") < out.indexOf("termbar"));
+  assert.ok(out.indexOf("afkpug-statusline") < out.indexOf("aiheadroom"));
   assert.doesNotMatch(out, /statusline\.sh/);
 });
 
-test("buildWrapped: generic command keeps its side effects, termbar draws", () => {
-  const dir = mkdtempSync(join(tmpdir(), "termbar-gen-"));
+test("buildWrapped: generic command keeps its side effects, ours draws", () => {
+  const dir = mkdtempSync(join(tmpdir(), "aih-gen-"));
   const marker = join(dir, "seen");
   const orig = `cat > ${marker}; echo ORIGINAL-OUTPUT`;
   const cmd = buildWrapped(orig, "echo TERMBAR-OUTPUT");
@@ -57,7 +57,7 @@ test("install --wrap: AFK Pug command is wrapped, backed up, and settings preser
   const s = sb.read();
   assert.equal(s.model, "sonnet");
   assert.match(s.statusLine!.command, /^if \[ -x '.*afkpug-statusline' \]; then '.*afkpug-statusline' '.*render --provider claude'/);
-  assert.ok(readdirSync(join(sb.dir, "claude")).some((f) => f.startsWith("settings.json.termbar-backup-")));
+  assert.ok(readdirSync(join(sb.dir, "claude")).some((f) => f.startsWith("settings.json.aiheadroom-backup-")));
 });
 
 test("install --wrap --dry-run changes nothing and shows from/to", () => {
@@ -91,20 +91,31 @@ test("uninstall restores the exact original command and backs up first", () => {
   assert.match(msg, /previous statusLine restored/);
   assert.deepEqual(sb.read().statusLine, { type: "command", command: AFK });
   assert.equal(sb.read().model, "sonnet");
-  const backups = readdirSync(join(sb.dir, "claude")).filter((f) => f.includes("termbar-backup"));
+  const backups = readdirSync(join(sb.dir, "claude")).filter((f) => f.includes("aiheadroom-backup"));
   assert.ok(backups.length >= 1);
 });
 
-test("uninstall with no previous statusLine deletes it; no-op when termbar absent", () => {
+test("uninstall with no previous statusLine deletes it; no-op when not installed", () => {
   const sb = sandbox();
   installClaude(opts());
   assert.ok(sb.read().statusLine);
   uninstallClaude();
   assert.equal(sb.read().statusLine, undefined);
-  assert.match(uninstallClaude(), /no termbar statusLine/);
+  assert.match(uninstallClaude(), /no AI Headroom statusLine/);
 
   const sb2 = sandbox({ type: "command", command: "echo hi" });
-  assert.match(uninstallClaude(), /no termbar statusLine/);
+  assert.match(uninstallClaude(), /no AI Headroom statusLine/);
   assert.equal(sb2.read().statusLine!.command, "echo hi");
   assert.ok(existsSync(sb2.file));
+});
+
+test("pre-rename installs: old command is recognized and uninstall restores from the old folder", () => {
+  const sb = sandbox({ type: "command", command: 'node "/x/termbar/dist/cli.js" render --provider claude' });
+  // The original command was saved under ~/.config/termbar before the rename.
+  mkdirSync(join(sb.dir, "xdg", "termbar"), { recursive: true });
+  writeFileSync(join(sb.dir, "xdg", "termbar", "previous-claude-statusline.json"), JSON.stringify({ type: "command", command: AFK }));
+  assert.match(installClaude(opts({ wrap: true })), /already installed/);
+  assert.match(uninstallClaude(), /previous statusLine restored/);
+  assert.deepEqual(sb.read().statusLine, { type: "command", command: AFK });
+  assert.ok(!existsSync(join(sb.dir, "xdg", "termbar", "previous-claude-statusline.json")));
 });

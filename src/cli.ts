@@ -11,24 +11,24 @@ import { serveStdio } from "./codex/mcp.ts";
 import { installClaude, installCodex, uninstallClaude, uninstallCodex } from "./install.ts";
 import { colorEnabled, renderAnsi } from "./render/ansi.ts";
 
-const HELP = `termbar: status line for AI coding CLIs
+const HELP = `AI Headroom (aiheadroom): status line for AI coding CLIs
 
 Usage:
-  termbar render --provider <claude|codex> [--columns N] [--oauth-usage]
+  aiheadroom render --provider <claude|codex> [--columns N] [--oauth-usage]
       Print the status line. Claude Code pipes JSON on stdin.
-  termbar watch [--provider codex] [--interval S]
+  aiheadroom watch [--provider codex] [--interval S]
       Redraw the line continuously (for a tmux pane / spare terminal).
-  termbar mcp
+  aiheadroom mcp
       Run as a Codex statusline provider (MCP over stdio).
-  termbar items                 List widgets you can put in "lines".
-  termbar preview [--provider claude|codex] [--columns N]
+  aiheadroom items                 List widgets you can put in "lines".
+  aiheadroom preview [--provider claude|codex] [--columns N]
       Show your current layout with sample data.
-  termbar config init           Write a starter config file.
-  termbar config path           Print the config file path.
-  termbar install [--claude] [--codex] [--wrap | --force] [--dry-run]
+  aiheadroom config init           Write a starter config file.
+  aiheadroom config path           Print the config file path.
+  aiheadroom install [--claude] [--codex] [--wrap | --force] [--dry-run]
       --wrap  keep an existing Claude statusLine command in front (e.g. AFK Pug)
-  termbar uninstall [--claude] [--codex] [--dry-run]
-  termbar doctor
+  aiheadroom uninstall [--claude] [--codex] [--dry-run]
+  aiheadroom doctor
 `;
 
 interface Args {
@@ -85,7 +85,7 @@ function draw(snap: Snapshot, cfg: Config, flags: Args["flags"]): string {
 
 async function renderOnce(provider: string, flags: Args["flags"], stdin: string): Promise<string> {
   const adapter = adapters[provider];
-  if (!adapter) return `termbar: unknown provider "${provider}"`;
+  if (!adapter) return `aiheadroom: unknown provider "${provider}"`;
   const cfg = loadConfig();
   if (flags.has("oauth-usage")) cfg.claude.oauthUsage = true;
   const snap = await adapter.read({ stdin, config: cfg, env: process.env });
@@ -151,10 +151,10 @@ async function main(): Promise<number> {
         }
         mkdirSync(dirname(path), { recursive: true });
         writeFileSync(path, `${JSON.stringify(STARTER(defaultConfig()), null, 2)}\n`);
-        console.log(`Wrote ${path}. Edit "lines", then run \`termbar preview\`.`);
+        console.log(`Wrote ${path}. Edit "lines", then run \`aiheadroom preview\`.`);
         return 0;
       }
-      console.log("Usage: termbar config <init|path>");
+      console.log("Usage: aiheadroom config <init|path>");
       return 1;
     }
     case "install":
@@ -188,7 +188,7 @@ main().then(
     if (code >= 0) process.exit(code);
   },
   (err: unknown) => {
-    console.error(`termbar: ${(err as Error).message}`);
+    console.error(`aiheadroom: ${(err as Error).message}`);
     process.exit(1);
   },
 );

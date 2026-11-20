@@ -9,7 +9,7 @@ export const DEFAULT_LINES: string[][] = [
 ];
 
 export interface LayoutOptions {
-  /** Widget ids per line. See `termbar items`. */
+  /** Widget ids per line. See `aiheadroom items`. */
   lines?: string[][];
   /** Terminal width. Omit for "unlimited" (e.g. no TTY). */
   columns?: number;
